@@ -539,4 +539,11 @@ public class MainController
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    protected String getIDFromBox(String boxID)
+    {
+        int split = boxID.indexOf(" : ");
+        boxID = boxID.substring(0, split);
+        return boxID;
+    }
 }

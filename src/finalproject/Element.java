@@ -45,6 +45,12 @@ public class Element
         notes = eNotes;
     }
 
+    Element(String nextElementId, String eType)
+    {
+        identifier = nextElementId;
+        type = eType;  
+    }
+
     String getIdentifier()
     {
         return identifier;

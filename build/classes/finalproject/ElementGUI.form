@@ -24,7 +24,12 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace pref="20" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="removeElement" max="32767" attributes="0"/>
+                  <Component id="newElementButton" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
               <Component id="listElements" min="-2" pref="198" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -69,7 +74,7 @@
                                   </Group>
                                   <Component id="fieldStartLevel" min="-2" pref="27" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
-                                      <Component id="innerElementBox" min="-2" pref="28" max="-2" attributes="0"/>
+                                      <Component id="innerElementBox" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="editInnerElementButton" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -85,14 +90,13 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="44" pref="46" max="32767" attributes="0"/>
+                      <EmptySpace min="44" pref="146" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane2" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="newElementButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Component id="saveButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -139,10 +143,7 @@
                           <Component id="editResponsibiltiesButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="newElementButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="saveButton" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -185,6 +186,13 @@
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Component id="listElements" alignment="1" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="258" max="-2" attributes="0"/>
+              <Component id="newElementButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="removeElement" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -326,6 +334,7 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="connectionBox">
       <Properties>
+        <Property name="maximumRowCount" type="int" value="100"/>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>
         </Property>
@@ -356,6 +365,7 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="innerElementBox">
       <Properties>
+        <Property name="maximumRowCount" type="int" value="100"/>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>
         </Property>
@@ -367,18 +377,24 @@
     </Component>
     <Component class="javax.swing.JButton" name="editInnerElementButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Edit Element"/>
+        <Property name="text" type="java.lang.String" value="Edit Inner Element"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="removeInnerElementButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Remove Element"/>
+        <Property name="text" type="java.lang.String" value="Remove Inner Element"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeInnerElementButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="newInnerElementButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="New Element"/>
+        <Property name="text" type="java.lang.String" value="New Inner Element"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newInnerElementButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="editNotesButton">
       <Properties>
@@ -419,6 +435,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newElementButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="removeElement">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Remove selected element"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeElementActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

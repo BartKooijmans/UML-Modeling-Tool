@@ -23,7 +23,6 @@ public class Model
         modelType = type;
         elementPresent = false;
         elements = new ArrayList<Element>();
-        addElement();
     }
 
     protected Model(String type, boolean present, ArrayList<Element> existingE)
@@ -38,10 +37,10 @@ public class Model
         return elementPresent;
     }
     
-    protected void addElement()
+    protected void addElement(Element newE)
     {
-//        Element newE = new Element();
-//        elements.add(newE);
+        elements.add(newE);
+        elementPresent = true;
     }
     
     protected void editElement()
