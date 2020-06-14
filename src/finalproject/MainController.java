@@ -21,8 +21,9 @@ public class MainController
     private ModelController modelController;
     private ArrayList<Element> allElements = new ArrayList<Element>();
     private ArrayList<Connection> allConnections = new ArrayList<Connection>();
+    private Element parentElement;
     private Model activeModel;
-    
+
     protected MainController()
     {
         modelController = new ModelController();
@@ -34,16 +35,14 @@ public class MainController
     }
 
     protected TreeSet<String> getAllowedElements()
-    {        
+    {
         return modelController.getElements(activeModel.getModelType());
     }
-    
+
     protected TreeSet<String> getAllowedConnections()
-    {        
+    {
         return modelController.getConnection(activeModel.getModelType());
     }
-
-
 
     protected Model getModel()
     {
@@ -90,6 +89,10 @@ public class MainController
         for (Element tempElement2 : allElements)
         {
             allConnections.addAll(tempElement2.getConnections());
+        }
+        for (Element tempElement : allElements)
+        {
+            System.out.println(tempElement.toString());
         }
     }
 
@@ -539,11 +542,88 @@ public class MainController
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     protected String getIDFromBox(String boxID)
     {
         int split = boxID.indexOf(" : ");
         boxID = boxID.substring(0, split);
         return boxID;
+    }
+
+    protected void removeElement(String elementIDToBeRemoved)
+    {
+        for(Element temp : allElements)
+        {
+            if (temp.getConnections().size() > 0)
+            {
+                int i = 0;
+                while (temp.getConnections().size() > i)
+                {
+                    Connection connection = temp.getConnections().get(i);
+                    if (connection.endElementID.equals(elementIDToBeRemoved) == true)
+                    {
+                        temp.getConnections().remove(connection);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+        }
+        Element elementToBeRemoved = findElement(elementIDToBeRemoved);
+        if (activeModel.getElements().contains(elementToBeRemoved))
+        {
+            activeModel.getElements().remove(elementToBeRemoved);
+        }
+        else
+        {
+            removeInnerElement(elementIDToBeRemoved);
+        }
+        loadAllInstances();
+    }
+
+    private void removeInnerElement(String innerElementIDToBeRemoved)
+    {
+        Element innerElementToBeRemoved = findElement(innerElementIDToBeRemoved);
+        findParentElement(innerElementToBeRemoved);
+        parentElement.getInnerElements().remove(innerElementToBeRemoved);
+    }
+
+    private void findParentElement(Element childElementBeFound)
+    {
+        parentElement = null;
+        for (Element temp : activeModel.elements)
+        {
+            if (temp.getInnerElements().size() > 0)
+            {
+                if (temp.getInnerElements().contains(childElementBeFound))
+                {
+                    parentElement = temp;
+                }
+                else
+                {
+                    searchInnerElement(temp.getInnerElements(), childElementBeFound);
+                }
+            }
+        }
+    }
+
+    private void searchInnerElement(ArrayList<Element> parentElements, Element childElementBeFound)
+    {
+        for (Element temp : parentElements)
+        {
+            if (temp.getInnerElements().size() > 0)
+            {
+                if (temp.getInnerElements().contains(childElementBeFound))
+                {
+                    parentElement = temp;
+                }
+                else
+                {
+                    searchInnerElement(temp.getInnerElements(), childElementBeFound);
+                }
+            }
+        }
     }
 }

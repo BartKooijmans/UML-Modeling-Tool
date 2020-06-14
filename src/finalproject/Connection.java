@@ -11,7 +11,6 @@ package finalproject;
  */
 public class Connection
 {
-
     String identifier;
     String type;
     String topCenter;

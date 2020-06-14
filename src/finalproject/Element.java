@@ -27,8 +27,6 @@ public class Element
     int terminantionLevel;
     String notes;
 
-
-
     protected Element(String eIdentifier, String eType, String eDescription, ArrayList<String> eAttributes, ArrayList<String> eOperations, ArrayList<String> eResponsibilities, ArrayList<Connection> eConnections, ArrayList<Element> eInnerElements, int eStartLevel, int eEndLevel, int eTerminantionLevel, String eNotes)
     {
         identifier = eIdentifier;
@@ -40,7 +38,7 @@ public class Element
         connections = eConnections;
         innerElements = eInnerElements;
         startLevel = eStartLevel;
-        endLevel= eEndLevel;
+        endLevel = eEndLevel;
         terminantionLevel = eTerminantionLevel;
         notes = eNotes;
     }
@@ -48,7 +46,12 @@ public class Element
     Element(String nextElementId, String eType)
     {
         identifier = nextElementId;
-        type = eType;  
+        type = eType;
+        attributes = new ArrayList<String>();
+        operations = new ArrayList<String>();
+        responsibilities = new ArrayList<String>();
+        connections = new ArrayList<Connection>();
+        innerElements = new ArrayList<Element>();
     }
 
     String getIdentifier()
@@ -110,7 +113,7 @@ public class Element
     {
         return description;
     }
-    
+
     @Override
     public String toString()
     {

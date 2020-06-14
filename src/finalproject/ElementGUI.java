@@ -39,10 +39,20 @@ public class ElementGUI extends javax.swing.JPanel
 
     private void updateList()
     {
+        guiController.loadAllInstances();
         listElements.removeAll();
         for (Element tempElement : guiController.getElements())
         {
             listElements.add(tempElement.toString());
+        }
+        if (selectedElement != null)
+        {
+            int index = 0;
+            while (listElements.getItem(index).equals(selectedElement.toString()) == false)
+            {
+                index++;
+            }
+            listElements.select(index);
         }
         listElements.revalidate();
     }
@@ -216,6 +226,19 @@ public class ElementGUI extends javax.swing.JPanel
 
         innerElementBox.setMaximumRowCount(100);
         innerElementBox.setAlignmentX(0.0F);
+        innerElementBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener()
+        {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt)
+            {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt)
+            {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)
+            {
+                innerElementBoxPopupMenuWillBecomeVisible(evt);
+            }
+        });
 
         editInnerElementButton.setText("Edit Inner Element");
 
@@ -435,10 +458,15 @@ public class ElementGUI extends javax.swing.JPanel
             loadSelectedElement();
         }
         else
-        {
+        {            
+            guiController.loadAllInstances();
+            String lookup = listElements.getSelectedItem();
+            lookup = guiController.getIDFromBox(lookup);
+            int selectedItem = listElements.getSelectedIndex();
             saveChanges();
+            listElements.select(selectedItem);
+            selectedElement = guiController.findElement(lookup);            
             loadSelectedElement();
-            updateList();
         }
     }//GEN-LAST:event_listElementsActionPerformed
 
@@ -454,6 +482,7 @@ public class ElementGUI extends javax.swing.JPanel
         {
             saveElement();
             guiController.loadAllInstances();
+            updateList();
         }
     }
 
@@ -524,29 +553,21 @@ public class ElementGUI extends javax.swing.JPanel
     {
         connectionBox.removeAllItems();
         innerElementBox.removeAllItems();
-        for (Connection temp : selectedElement.getConnections())
+        if (selectedElement.getConnections().size() > 0)
         {
-            connectionBox.addItem(temp.toString());
+            for (Connection temp : selectedElement.getConnections())
+            {
+                connectionBox.addItem(temp.toString());
+            }
         }
-        for (Element temp : selectedElement.getInnerElements())
+        if (selectedElement.getInnerElements().size() > 0)
         {
-            innerElementBox.addItem(temp.toString());
+            for (Element temp : selectedElement.getInnerElements())
+            {
+                innerElementBox.addItem(temp.toString());
+            }
         }
     }
-
-    private void deleteInnerElement()
-    {
-        String lookup = innerElementBox.getSelectedItem().toString();
-        lookup = guiController.getIDFromBox(lookup);
-        Element toBeRemoved = guiController.findElement(lookup);
-        toBeRemoved = null;
-    }
-
-    private void deleteSelectedElement()
-    {
-        guiController.getModel().getElements().remove(selectedElement);
-    }
-
 
     private void editAttributesButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editAttributesButtonActionPerformed
     {//GEN-HEADEREND:event_editAttributesButtonActionPerformed
@@ -607,9 +628,7 @@ public class ElementGUI extends javax.swing.JPanel
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
     {//GEN-HEADEREND:event_saveButtonActionPerformed
         saveChanges();
-        int temp = listElements.getSelectedIndex();
         updateList();
-        listElements.select(temp);
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void editConnectionButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editConnectionButtonActionPerformed
@@ -645,7 +664,7 @@ public class ElementGUI extends javax.swing.JPanel
         }
         else
         {
-            System.out.println("Select an element first to start the connection fromn");
+            JOptionPane.showMessageDialog(this, "Select an element first.");
         }
     }//GEN-LAST:event_newConnectionButtonActionPerformed
 
@@ -663,8 +682,11 @@ public class ElementGUI extends javax.swing.JPanel
         notes = "";
         activeEditorField = 0;
         stringArrayEditor.setText("");
-        selectedElement = new Element(nextElementId , boxType.getItemAt(0));
+        selectedElement = new Element(nextElementId, boxType.getItemAt(0));
         guiController.getModel().addElement(selectedElement);
+        updateBoxes();
+        updateArrays();
+        updateList();
     }//GEN-LAST:event_newElementButtonActionPerformed
 
     private void connectionBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)//GEN-FIRST:event_connectionBoxPopupMenuWillBecomeVisible
@@ -685,8 +707,7 @@ public class ElementGUI extends javax.swing.JPanel
         {
             String innerElementID = innerElementBox.getSelectedItem().toString();
             innerElementID = guiController.getIDFromBox(innerElementID);
-            Element innerElementToBeRemoved = guiController.findElement(innerElementID);
-            selectedElement.getInnerElements().remove(innerElementToBeRemoved);
+            guiController.removeElement(innerElementID);
         }
     }//GEN-LAST:event_removeInnerElementButtonActionPerformed
 
@@ -700,30 +721,47 @@ public class ElementGUI extends javax.swing.JPanel
         int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete the selected element?", "Delete element?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
         if (n == 0)
         {
-            deleteSelectedElement();
-            guiController.loadAllInstances();
+            guiController.removeElement(selectedElement.getIdentifier());
+            selectedElement = null;
             updateList();
         }
     }//GEN-LAST:event_removeElementActionPerformed
 
     private void newInnerElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newInnerElementButtonActionPerformed
     {//GEN-HEADEREND:event_newInnerElementButtonActionPerformed
-        String nextElementId = guiController.findNextAvailableElementID();
-        fieldIdentifier.setText(nextElementId);
-        fieldDescription.setText("");
-        fieldStartLevel.setText("0");
-        fieldEndLevel.setText("0");
-        fieldTeminationLevel.setText("0");
-        attributes = "";
-        operations = "";
-        responsibilities = "";
-        notes = "";
-        activeEditorField = 0;
-        stringArrayEditor.setText("");        
-        Element newInnerElement = new Element(nextElementId , boxType.getItemAt(0));
-        selectedElement.getInnerElements().add(newInnerElement);
-        selectedElement = newInnerElement;
+        if (selectedElement != null)
+        {
+            String nextElementId = guiController.findNextAvailableElementID();
+            fieldIdentifier.setText(nextElementId);
+            fieldDescription.setText("");
+            fieldStartLevel.setText("0");
+            fieldEndLevel.setText("0");
+            fieldTeminationLevel.setText("0");
+            attributes = "";
+            operations = "";
+            responsibilities = "";
+            notes = "";
+            activeEditorField = 0;
+            stringArrayEditor.setText("");
+            Element newInnerElement = new Element(nextElementId, boxType.getItemAt(0));
+            selectedElement.getInnerElements().add(newInnerElement);
+            guiController.loadAllInstances();
+            selectedElement = guiController.findElement(newInnerElement.getIdentifier());
+            updateBoxes();
+            updateArrays();
+            updateList();
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Select an element first.");
+        }
     }//GEN-LAST:event_newInnerElementButtonActionPerformed
+
+    private void innerElementBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)//GEN-FIRST:event_innerElementBoxPopupMenuWillBecomeVisible
+    {//GEN-HEADEREND:event_innerElementBoxPopupMenuWillBecomeVisible
+        updateBoxes();
+        this.revalidate();
+    }//GEN-LAST:event_innerElementBoxPopupMenuWillBecomeVisible
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
