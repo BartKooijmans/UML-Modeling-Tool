@@ -11,18 +11,18 @@ package finalproject;
  */
 public class Connection
 {
-    String identifier;
-    String type;
-    String topCenter;
-    String bottomCenter;
-    String descriptionStart;
-    String multiplicityStart;
-    String descriptionEnd;
-    String multiplicityEnd;
-    String endElementID;
-    int level;
-    String notes;
-    Element endElement;
+    private String identifier;
+    private String type;
+    private String topCenter;
+    private String bottomCenter;
+    private String descriptionStart;
+    private String multiplicityStart;
+    private String descriptionEnd;
+    private String multiplicityEnd;
+    private String endElementID;
+    private int level;
+    private String notes;
+    private Element endElement;
 
     protected Connection()
     {

@@ -14,18 +14,18 @@ import java.util.ArrayList;
 public class Element
 {
 
-    String identifier;
-    String type;
-    String description;
-    ArrayList<String> attributes = new ArrayList<String>();
-    ArrayList<String> operations = new ArrayList<String>();
-    ArrayList<String> responsibilities = new ArrayList<String>();
-    ArrayList<Connection> connections = new ArrayList<Connection>();
-    ArrayList<Element> innerElements = new ArrayList<Element>();
-    int startLevel;
-    int endLevel;
-    int terminantionLevel;
-    String notes;
+    private String identifier;
+    private String type;
+    private String description;
+    private ArrayList<String> attributes = new ArrayList<String>();
+    private ArrayList<String> operations = new ArrayList<String>();
+    private ArrayList<String> responsibilities = new ArrayList<String>();
+    private ArrayList<Connection> connections = new ArrayList<Connection>();
+    private ArrayList<Element> innerElements = new ArrayList<Element>();
+    private int startLevel;
+    private int endLevel;
+    private int terminantionLevel;
+    private String notes;
 
     protected Element(String eIdentifier, String eType, String eDescription, ArrayList<String> eAttributes, ArrayList<String> eOperations, ArrayList<String> eResponsibilities, ArrayList<Connection> eConnections, ArrayList<Element> eInnerElements, int eStartLevel, int eEndLevel, int eTerminantionLevel, String eNotes)
     {
@@ -43,7 +43,7 @@ public class Element
         notes = eNotes;
     }
 
-    Element(String nextElementId, String eType)
+    protected Element(String nextElementId, String eType)
     {
         identifier = nextElementId;
         type = eType;

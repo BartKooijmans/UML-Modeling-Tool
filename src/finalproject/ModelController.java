@@ -13,85 +13,84 @@ import java.util.*;
  */
 public class ModelController
 {
-    TreeMap<String, TreeSet<String>> ElementLimiter = new TreeMap<String, TreeSet<String>>();
-    TreeMap<String, TreeSet<String>> ConnectionLimiter = new TreeMap<String, TreeSet<String>>();
+    private TreeMap<String, TreeSet<String>> elementLimiter = new TreeMap<String, TreeSet<String>>();
+    private TreeMap<String, TreeSet<String>> connectionLimiter = new TreeMap<String, TreeSet<String>>();
     
     public ModelController()
     {
         //Adds the Element types for a Use Case Diagram
-        TreeSet<String> UseCaseElements = new TreeSet<String>();
-        UseCaseElements.add("UseCase");
-        UseCaseElements.add("Actor");
-        UseCaseElements.add("Subsystem");
-        UseCaseElements.add("Package");        
-        ElementLimiter.put("Use Case Diagram", UseCaseElements);
+        TreeSet<String> useCaseElements = new TreeSet<String>();
+        useCaseElements.add("Use case");
+        useCaseElements.add("Actor");
+        useCaseElements.add("Subsystem");
+        useCaseElements.add("Package");        
+        elementLimiter.put("Use Case Diagram", useCaseElements);
         
         //Adds the Connection types for a Use Case Diagram
-        TreeSet<String> UseCaseConnections = new TreeSet<String>();
-        UseCaseConnections.add("Line");
-        UseCaseConnections.add("Dashed arrow");
-        ConnectionLimiter.put("Use Case Diagram", UseCaseConnections);
+        TreeSet<String> useCaseConnections = new TreeSet<String>();
+        useCaseConnections.add("Line");
+        useCaseConnections.add("Dashed arrow");
+        connectionLimiter.put("Use Case Diagram", useCaseConnections);
         
         //Adds the Element types for a Class Diagram
-        TreeSet<String> ClassElements = new TreeSet<String>();
-        ClassElements.add("Class");
-        ClassElements.add("Class with Inner class(es)");
-        ClassElements.add("Dashed Class");
-        ClassElements.add("Active Class");
-        ClassElements.add("Interface");
-        ClassElements.add("Collaboration");
-        ClassElements.add("Open diamond");
-        ElementLimiter.put("Class Diagram", ClassElements);
+        TreeSet<String> classElements = new TreeSet<String>();
+        classElements.add("Class");
+        classElements.add("Class with Inner class(es)");
+        classElements.add("Dashed Class");
+        classElements.add("Active Class");
+        classElements.add("Interface");
+        classElements.add("Collaboration");
+        classElements.add("Open diamond");
+        elementLimiter.put("Class Diagram", classElements);
         
         //Adds the Connection types for a Class Diagram
-        TreeSet<String> ClassConnections = new TreeSet<String>();
-        ClassConnections.add("Line");
-        ClassConnections.add("Arrow");
-        ClassConnections.add("Open arrow");
-        ClassConnections.add("Dashed arrow");
-        ClassConnections.add("Dashed open arrow");
-        ClassConnections.add("Open diamond line");
-        ClassConnections.add("Closed diamond line");
-        ClassConnections.add("Require");
-        ClassConnections.add("provide");
-        ConnectionLimiter.put("Class Diagram", ClassConnections); 
+        TreeSet<String> classConnections = new TreeSet<String>();
+        classConnections.add("Line");
+        classConnections.add("Arrow");
+        classConnections.add("Open arrow");
+        classConnections.add("Dashed arrow");
+        classConnections.add("Dashed open arrow");
+        classConnections.add("Open diamond line");
+        classConnections.add("Closed diamond line");
+        classConnections.add("Require");
+        classConnections.add("Provide");
+        connectionLimiter.put("Class Diagram", classConnections); 
         
         //Adds the Element types for a Activity Diagram
-        TreeSet<String> ActivityElements = new TreeSet<String>();
-        ActivityElements.add("Action Node");
-        ActivityElements.add("Object Node");
-        ActivityElements.add("Split and Merge Node");
-        ActivityElements.add("Fork and Join Node");
-        ActivityElements.add("Initial Node");
-        ActivityElements.add("Activity Final Node");
-        ActivityElements.add("Flow Final Node");
-        ActivityElements.add("Partition");
-        
-        ActivityElements.add("Class with Inner class(es)");
-        ElementLimiter.put("Activity Diagram", ActivityElements);
+        TreeSet<String> activityElements = new TreeSet<String>();
+        activityElements.add("Action Node");
+        activityElements.add("Object Node");
+        activityElements.add("Split and Merge Node");
+        activityElements.add("Fork and Join Node");
+        activityElements.add("Initial Node");
+        activityElements.add("Activity Final Node");
+        activityElements.add("Flow Final Node");
+        activityElements.add("Partition");        
+        activityElements.add("Class with Inner class(es)");
+        elementLimiter.put("Activity Diagram", activityElements);
         
         //Adds the Connection types for a Activity Diagram
-        TreeSet<String> ActivityConnections = new TreeSet<String>();
-        ActivityConnections.add("Arrow");
-        ActivityConnections.add("Zig-zag Arrow");
-        ConnectionLimiter.put("Activity Diagram", ActivityConnections);
+        TreeSet<String> activityConnections = new TreeSet<String>();
+        activityConnections.add("Arrow");
+        activityConnections.add("Zig-zag Arrow");
+        connectionLimiter.put("Activity Diagram", activityConnections);
     }
     
     
     protected TreeSet<String> getConnection(String diagramType)
     {    
-        return ConnectionLimiter.get(diagramType);
+        return connectionLimiter.get(diagramType);
     }
     
     
     protected TreeSet<String> getElements(String diagramType)
     {
-        return ElementLimiter.get(diagramType);
+        return elementLimiter.get(diagramType);
     }
     
     protected Object[] getDiagrams()
     {
-        Set<String> diagrams = ElementLimiter.keySet();
+        Set<String> diagrams = elementLimiter.keySet();
         Object[] allowedDiagrams = diagrams.toArray();        
         return allowedDiagrams;
     }

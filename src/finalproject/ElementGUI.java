@@ -17,14 +17,14 @@ import javax.swing.JOptionPane;
 public class ElementGUI extends javax.swing.JPanel
 {
 
-    Element selectedElement;
-    MainController guiController;
-    String attributes = new String();
-    String operations = new String();
-    String responsibilities = new String();
-    String notes = new String();
-    int activeEditorField;
-    JFrame connectionFrame = new JFrame();
+    private Element selectedElement;
+    private MainController guiController;
+    private String attributes = new String();
+    private String operations = new String();
+    private String responsibilities = new String();
+    private String notes = new String();
+    private int activeEditorField;
+    private JFrame connectionFrame = new JFrame();
 
     public ElementGUI(MainController suppliedGuiController)
     {
@@ -683,7 +683,7 @@ public class ElementGUI extends javax.swing.JPanel
         activeEditorField = 0;
         stringArrayEditor.setText("");
         selectedElement = new Element(nextElementId, boxType.getItemAt(0));
-        guiController.getModel().addElement(selectedElement);
+        guiController.addElement(selectedElement);
         updateBoxes();
         updateArrays();
         updateList();

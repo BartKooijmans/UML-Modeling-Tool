@@ -252,7 +252,7 @@ public class MainMenu
         }
     }
 
-    public void addElementManagenementUI()
+    private void addElementManagenementUI()
     {
         detailsPanel = mainController.updateUI();
         mainFrame.setContentPane(detailsPanel);

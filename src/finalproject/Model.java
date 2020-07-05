@@ -13,9 +13,9 @@ import java.util.ArrayList;
  */
 public class Model
 {
-    String modelType;
-    boolean elementPresent;
-    ArrayList<Element> elements;
+    private String modelType;
+    private boolean elementPresent;
+    private ArrayList<Element> elements;
     
 
     protected Model(String type)
@@ -37,37 +37,6 @@ public class Model
         return elementPresent;
     }
     
-    protected void addElement(Element newE)
-    {
-        elements.add(newE);
-        elementPresent = true;
-    }
-    
-    protected void editElement()
-    {
-        
-    }
-    
-    protected void removeElement()
-    {
-        
-    }
-    
-    protected void addConnection()
-    {
-        
-    }
-    
-    protected void editConnection()
-    {
-        
-    }
-    
-    protected void removeConnection()
-    {
-        
-    }
-
     protected String getModelType()
     {
         return modelType;
@@ -76,5 +45,10 @@ public class Model
     protected ArrayList<Element> getElements()
     {
         return elements;
+    }
+
+    protected void setElementPresent(boolean updatedStatus)
+    {
+        elementPresent = updatedStatus;
     }
 }

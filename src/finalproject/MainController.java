@@ -560,7 +560,7 @@ public class MainController
                 while (temp.getConnections().size() > i)
                 {
                     Connection connection = temp.getConnections().get(i);
-                    if (connection.endElementID.equals(elementIDToBeRemoved) == true)
+                    if (connection.getEndElementID().equals(elementIDToBeRemoved) == true)
                     {
                         temp.getConnections().remove(connection);
                     }
@@ -575,6 +575,10 @@ public class MainController
         if (activeModel.getElements().contains(elementToBeRemoved))
         {
             activeModel.getElements().remove(elementToBeRemoved);
+            if(activeModel.getElements().size() == 0)
+            {
+                activeModel.setElementPresent(false);
+            }
         }
         else
         {
@@ -593,7 +597,7 @@ public class MainController
     private void findParentElement(Element childElementBeFound)
     {
         parentElement = null;
-        for (Element temp : activeModel.elements)
+        for (Element temp : activeModel.getElements())
         {
             if (temp.getInnerElements().size() > 0)
             {
@@ -625,5 +629,15 @@ public class MainController
                 }
             }
         }
+    }
+
+    protected void addElement(Element selectedElement)
+    {
+        activeModel.getElements().add(selectedElement);
+        if(activeModel.getElementPresent() == false)
+        {
+            activeModel.setElementPresent(true);
+        }
+        loadAllInstances();
     }
 }
