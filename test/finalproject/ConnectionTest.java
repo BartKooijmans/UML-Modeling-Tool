@@ -46,10 +46,12 @@ public class ConnectionTest
         eOperations1.add("test op2");
         ArrayList<String> eResponsibilities1 = new ArrayList<String>();
         ArrayList<Connection> eConnections1 = new ArrayList<Connection>();
-        Connection c1 = new Connection("c1", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c1");
+        ArrayList<String> cLinkedModels = new ArrayList<String>(); 
+        Connection c1 = new Connection("c1", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c1", cLinkedModels);
         eConnections1.add(c1);
         ArrayList<Element> eInnerElements1 = new ArrayList<Element>();
-        tempElement = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null");        
+        ArrayList<String> eLinkedModels = new ArrayList<String>(); 
+        tempElement = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null", eLinkedModels);        
     }
     
     @After
@@ -65,7 +67,8 @@ public class ConnectionTest
     public void testGetEndElementID()
     {
         System.out.println("getEndElementID");
-        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4");
+        ArrayList<String> cLinkedModels2 = new ArrayList<String>(); 
+        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4", cLinkedModels2);
         instance.setEndElement(tempElement);
         String expResult = "e0";
         String result = instance.getEndElementID();
@@ -79,8 +82,9 @@ public class ConnectionTest
     @Test
     public void testSetEndElement()
     {
-        System.out.println("setEndElement");   
-        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4");
+        System.out.println("setEndElement");
+        ArrayList<String> cLinkedModels2 = new ArrayList<String>(); 
+        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4", cLinkedModels2);
         instance.setEndElement(tempElement);
         assertNotNull(instance.getEndElement());        
     }
@@ -92,7 +96,8 @@ public class ConnectionTest
     public void testGetEndElement()
     {
         System.out.println("getEndElement");
-        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4");
+        ArrayList<String> cLinkedModels2 = new ArrayList<String>(); 
+        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4", cLinkedModels2);
         instance.setEndElement(tempElement);
         Element expResult = tempElement;
         Element result = instance.getEndElement();
@@ -107,7 +112,8 @@ public class ConnectionTest
     public void testToString()
     {
         System.out.println("toString");
-        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4");
+        ArrayList<String> cLinkedModels2 = new ArrayList<String>(); 
+        Connection instance = new Connection("c4", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c4", cLinkedModels2);
         instance.setEndElement(tempElement);
         String expResult = "c4 : e0 : Element description 0";
         String result = instance.toString();

@@ -5,9 +5,9 @@
  */
 package finalproject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import javax.swing.JFrame;
+import java.io.*;
+import java.util.*;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,17 +24,17 @@ public class ElementGUI extends javax.swing.JPanel
     private String responsibilities = new String();
     private String notes = new String();
     private int activeEditorField;
-    private JFrame connectionFrame = new JFrame();
+    private JFileChooser linkFileChooser;
 
     public ElementGUI(MainController suppliedGuiController)
     {
         guiController = suppliedGuiController;
+        linkFileChooser = new JFileChooser();
+        linkFileChooser.setFileFilter(guiController.getJSONfilter());
         initComponents();
-        for (String type : guiController.getAllowedElements())
-        {
-            boxType.addItem(type);
-        }
         updateList();
+        updateTypeBox();
+        updateBoxes();
     }
 
     private void updateList()
@@ -54,7 +54,7 @@ public class ElementGUI extends javax.swing.JPanel
             }
             listElements.select(index);
         }
-        listElements.revalidate();
+        this.revalidate();
     }
 
     /**
@@ -73,9 +73,6 @@ public class ElementGUI extends javax.swing.JPanel
         jLabel2 = new javax.swing.JLabel();
         fieldDescription = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         fieldStartLevel = new javax.swing.JTextField();
@@ -104,6 +101,18 @@ public class ElementGUI extends javax.swing.JPanel
         listElements = new java.awt.List();
         newElementButton = new javax.swing.JButton();
         removeElement = new javax.swing.JButton();
+        boxModelToModel = new javax.swing.JComboBox<>();
+        linkModelToM = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        delinkModelFromM = new javax.swing.JButton();
+        loadLinkedModelM = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        boxModelToElement = new javax.swing.JComboBox<>();
+        linkModelToE = new javax.swing.JButton();
+        loadLinkedModelE = new javax.swing.JButton();
+        delinkModelFromE = new javax.swing.JButton();
+        labelTextfield = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -119,12 +128,6 @@ public class ElementGUI extends javax.swing.JPanel
         fieldDescription.setAlignmentX(0.0F);
 
         jLabel3.setText("Description:");
-
-        jLabel4.setText("Attributes:");
-
-        jLabel5.setText("Operations:");
-
-        jLabel6.setText("Responsibilities:");
 
         jLabel7.setText("Connections: ");
 
@@ -142,7 +145,7 @@ public class ElementGUI extends javax.swing.JPanel
 
         jLabel11.setText("Termination Level:  ");
 
-        jLabel12.setText("Notes: ");
+        jLabel12.setText("Edit: ");
 
         stringArrayEditor.addFocusListener(new java.awt.event.FocusAdapter()
         {
@@ -153,7 +156,9 @@ public class ElementGUI extends javax.swing.JPanel
         });
         jScrollPane2.setViewportView(stringArrayEditor);
 
-        editAttributesButton.setText("Edit Attributes");
+        editAttributesButton.setText("Attributes");
+        editAttributesButton.setMaximumSize(new java.awt.Dimension(85, 23));
+        editAttributesButton.setMinimumSize(new java.awt.Dimension(85, 23));
         editAttributesButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -162,7 +167,7 @@ public class ElementGUI extends javax.swing.JPanel
             }
         });
 
-        editOperationsButton.setText("Edit Operations");
+        editOperationsButton.setText("Operations");
         editOperationsButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -171,7 +176,7 @@ public class ElementGUI extends javax.swing.JPanel
             }
         });
 
-        editResponsibiltiesButton.setText("Edit Responsibilities");
+        editResponsibiltiesButton.setText("Responsibilities");
         editResponsibiltiesButton.setAlignmentX(0.5F);
         editResponsibiltiesButton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -241,6 +246,13 @@ public class ElementGUI extends javax.swing.JPanel
         });
 
         editInnerElementButton.setText("Edit Inner Element");
+        editInnerElementButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                editInnerElementButtonActionPerformed(evt);
+            }
+        });
 
         removeInnerElementButton.setText("Remove Inner Element");
         removeInnerElementButton.addActionListener(new java.awt.event.ActionListener()
@@ -260,8 +272,11 @@ public class ElementGUI extends javax.swing.JPanel
             }
         });
 
-        editNotesButton.setText("Edit Notes");
+        editNotesButton.setText("Notes");
         editNotesButton.setAlignmentX(0.5F);
+        editNotesButton.setMaximumSize(new java.awt.Dimension(85, 23));
+        editNotesButton.setMinimumSize(new java.awt.Dimension(85, 23));
+        editNotesButton.setPreferredSize(new java.awt.Dimension(85, 23));
         editNotesButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -307,6 +322,68 @@ public class ElementGUI extends javax.swing.JPanel
             }
         });
 
+        linkModelToM.setText("Add linked model");
+        linkModelToM.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                linkModelToMActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Connected models to model:");
+
+        delinkModelFromM.setText("Remove linked model");
+        delinkModelFromM.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                delinkModelFromMActionPerformed(evt);
+            }
+        });
+
+        loadLinkedModelM.setText("Load linked model");
+        loadLinkedModelM.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                loadLinkedModelMActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setText("Models linked to element:");
+
+        linkModelToE.setText("Add linked model");
+        linkModelToE.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                linkModelToEActionPerformed(evt);
+            }
+        });
+
+        loadLinkedModelE.setText("Load linked model");
+        loadLinkedModelE.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                loadLinkedModelEActionPerformed(evt);
+            }
+        });
+
+        delinkModelFromE.setText("Remove linked model");
+        delinkModelFromE.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                delinkModelFromEActionPerformed(evt);
+            }
+        });
+
+        labelTextfield.setText("Nothing selected: ");
+
+        jLabel4.setText("Elements in model:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -314,74 +391,117 @@ public class ElementGUI extends javax.swing.JPanel
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(removeElement, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(newElementButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(19, 19, 19)
-                .addComponent(listElements, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(loadLinkedModelM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(delinkModelFromM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(removeElement, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                            .addComponent(newElementButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(boxModelToModel, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(linkModelToM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(19, 19, 19))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(listElements, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(47, 47, 47)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(connectionBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(newConnectionButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(editConnectionButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeConnectionButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(innerElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(newInnerElementButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(editInnerElementButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeInnerElementButton))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(editNotesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(editAttributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(editOperationsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(editResponsibiltiesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 247, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
                                 .addGap(48, 48, 48)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(fieldIdentifier, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(fieldDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(editAttributesButton)
                                     .addComponent(boxType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(48, 48, 48)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(connectionBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(editConnectionButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeConnectionButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(newConnectionButton))
                                     .addComponent(fieldStartLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(innerElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(editInnerElementButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeInnerElementButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(newInnerElementButton))
                                     .addComponent(fieldEndLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(fieldTeminationLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(editNotesButton)
-                                    .addComponent(editOperationsButton)
-                                    .addComponent(editResponsibiltiesButton))))
-                        .addGap(44, 146, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                                    .addComponent(fieldTeminationLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(saveButton)))
-                        .addContainerGap())))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(loadLinkedModelE, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                                .addComponent(boxModelToElement, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(delinkModelFromE, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(labelTextfield)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel14)
+                                .addComponent(linkModelToE, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(258, 258, 258)
+                .addComponent(newElementButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(removeElement)
+                .addGap(22, 22, 22)
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(linkModelToM)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(boxModelToModel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(loadLinkedModelM)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(delinkModelFromM)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -391,23 +511,37 @@ public class ElementGUI extends javax.swing.JPanel
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(boxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(9, 9, 9))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(saveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(linkModelToE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(fieldDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3))
+                    .addComponent(boxModelToElement, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(loadLinkedModelE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(delinkModelFromE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(fieldStartLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(fieldDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                            .addComponent(fieldEndLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(editAttributesButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(editOperationsButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(editResponsibiltiesButton)))
-                    .addComponent(saveButton))
+                            .addComponent(fieldTeminationLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -422,32 +556,24 @@ public class ElementGUI extends javax.swing.JPanel
                     .addComponent(innerElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(newInnerElementButton)
                     .addComponent(removeInnerElementButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fieldStartLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fieldEndLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fieldTeminationLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(editNotesButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addComponent(listElements, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(258, 258, 258)
-                .addComponent(newElementButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 42, Short.MAX_VALUE)
+                .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(removeElement)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(editAttributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(editOperationsButton)
+                        .addComponent(editResponsibiltiesButton))
+                    .addComponent(editNotesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jLabel4)
+                .addGap(27, 27, 27)
+                .addComponent(listElements, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -458,18 +584,21 @@ public class ElementGUI extends javax.swing.JPanel
             loadSelectedElement();
         }
         else
-        {            
+        {
             guiController.loadAllInstances();
             String lookup = listElements.getSelectedItem();
             lookup = guiController.getIDFromBox(lookup);
             int selectedItem = listElements.getSelectedIndex();
             saveChanges();
             listElements.select(selectedItem);
-            selectedElement = guiController.findElement(lookup);            
+            selectedElement = guiController.findElement(lookup);
             loadSelectedElement();
         }
     }//GEN-LAST:event_listElementsActionPerformed
 
+    /**
+     * Creates a prompt if the user wants to save the changes the changes to the element, afterwards tell the main controller to update its lists. and update the element list based on the new list.
+     */
     private void saveChanges()
     {
         Object[] options =
@@ -477,7 +606,7 @@ public class ElementGUI extends javax.swing.JPanel
             "Yes, save",
             "No, don't save"
         };
-        int n = JOptionPane.showOptionDialog(null, "Do you want to save your changes?", "Save changes?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+        int n = JOptionPane.showOptionDialog(null, "Do you want to save the changes to your element?", "Save changes?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
         if (n == 0)
         {
             saveElement();
@@ -486,22 +615,38 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }
 
+    /**
+     * Stores the values entered in the fields in the selected active element.
+     */
     private void saveElement()
     {
-        ArrayList<String> operationsList = splitString(operations);
-        ArrayList<String> attributesList = splitString(attributes);
-        ArrayList<String> responsibilitiesList = splitString(responsibilities);
-        selectedElement.setOperations(operationsList);
-        selectedElement.setAttributes(attributesList);
-        selectedElement.setResponsibilities(responsibilitiesList);
-        selectedElement.setType(boxType.getSelectedItem().toString());
-        selectedElement.setDescription(fieldDescription.getText());
-        selectedElement.setStartLevel(Integer.parseInt(fieldStartLevel.getText()));
-        selectedElement.setEndLevel(Integer.parseInt(fieldEndLevel.getText()));
-        selectedElement.setTerminationLevel(Integer.parseInt(fieldTeminationLevel.getText()));
-        selectedElement.setNotes(notes);
+        if (selectedElement != null)
+        {
+            ArrayList<String> operationsList = splitString(operations);
+            ArrayList<String> attributesList = splitString(attributes);
+            ArrayList<String> responsibilitiesList = splitString(responsibilities);
+            selectedElement.setOperations(operationsList);
+            selectedElement.setAttributes(attributesList);
+            selectedElement.setResponsibilities(responsibilitiesList);
+            if (boxType.getSelectedIndex() == -1)
+            {
+                boxType.setSelectedIndex(0);
+            }
+            selectedElement.setType(boxType.getSelectedItem().toString());
+            selectedElement.setDescription(fieldDescription.getText());
+            selectedElement.setStartLevel(Integer.parseInt(fieldStartLevel.getText()));
+            selectedElement.setEndLevel(Integer.parseInt(fieldEndLevel.getText()));
+            selectedElement.setTerminationLevel(Integer.parseInt(fieldTeminationLevel.getText()));
+            selectedElement.setNotes(notes);
+        }
     }
 
+    /**
+     * Splits the given spring up into multiple strings, based on each new line break , \n , within the string , and adds them to an ArrayList that get returned.
+     * 
+     * @param n String to be split up based on each line
+     * @return ArrayList containing the Strings that the original spring was split up in.
+     */
     private ArrayList<String> splitString(String n)
     {
         ArrayList<String> tempList = new ArrayList<>();
@@ -510,8 +655,12 @@ public class ElementGUI extends javax.swing.JPanel
         return tempList;
     }
 
+    /**
+     * Looks up the selected element based on the text value selected in the element list, sets that element as the selectedElement and  loads the the values into the ui fields
+     */
     private void loadSelectedElement()
     {
+        enableButtons();
         String lookup = listElements.getSelectedItem();
         lookup = guiController.getIDFromBox(lookup);
         selectedElement = guiController.findElement(lookup);
@@ -532,79 +681,195 @@ public class ElementGUI extends javax.swing.JPanel
         updateBoxes();
     }
 
+    /**
+     *  Updates the String for the text fields based on the arrays
+     */
     private void updateArrays()
     {
-        for (String temp : selectedElement.getAttributes())
+        if (selectedElement != null)
         {
-            attributes = attributes + temp + "\n";
+            for (String temp : selectedElement.getAttributes())
+            {
+                attributes = attributes + temp + "\n";
+            }
+            for (String temp : selectedElement.getOperation())
+            {
+                operations = operations + temp + "\n";
+            }
+            for (String temp : selectedElement.getResponsibilities())
+            {
+                responsibilities = responsibilities + temp + "\n";
+            }
+            notes = selectedElement.getNotes();
         }
-        for (String temp : selectedElement.getOperation())
-        {
-            operations = operations + temp + "\n";
-        }
-        for (String temp : selectedElement.getOperation())
-        {
-            responsibilities = responsibilities + temp + "\n";
-        }
-        notes = selectedElement.getNotes();
+        this.revalidate();
     }
 
+    /**
+     * Updates the element type with the allowed element types based on the model type.
+     */
+    private void updateTypeBox()
+    {
+        boxType.removeAllItems();
+        for (String type : guiController.getAllowedElements())
+        {
+            boxType.addItem(type);
+        }
+        this.revalidate();
+    }
+
+    /**
+     * Updates the linked model to the model box containing the links of model linked to the active model with the relative model paths.
+     */
+    private void updateBoxModelToModel()
+    {
+        boxModelToModel.removeAllItems();
+        for (String path : guiController.getModel().getLinkedModels())
+        {
+            boxModelToModel.addItem(path);
+        }
+        this.revalidate();
+    }
+
+    /**
+     * Updates the connection box with the connection descriptions (ID and end element) that are connected to the selected model.
+     */
+    private void updateConnectionBox()
+    {
+        if (selectedElement != null)
+        {
+            connectionBox.removeAllItems();
+
+            if (selectedElement.getConnections().size() > 0)
+            {
+                for (Connection temp : selectedElement.getConnections())
+                {
+                    connectionBox.addItem(temp.toString());
+                }
+            }
+        }
+        this.revalidate();
+    }
+
+    /**
+     * Updates the inner element box with the element description (ID and end description) that are inner elements of the selected model.
+     */
+    private void updateInnerElementBox()
+    {
+        if (selectedElement != null)
+        {
+            innerElementBox.removeAllItems();
+            if (selectedElement.getInnerElements().size() > 0)
+            {
+                for (Element temp : selectedElement.getInnerElements())
+                {
+                    innerElementBox.addItem(temp.toString());
+                }
+            }
+        }
+        this.revalidate();
+    }
+
+    /**
+     * Updates the linked model top the element box containing the links of model linked to the selected element with the relative model paths.
+     */
+    private void updateBoxModelToElement()
+    {
+        if (selectedElement != null)
+        {
+            boxModelToElement.removeAllItems();
+            for (String path : selectedElement.getLinkedModels())
+            {
+                boxModelToElement.addItem(path);
+            }
+        }
+        this.revalidate();
+    }
+
+    /**
+     * Calls all box update methods except for the element type 
+     */
     private void updateBoxes()
     {
-        connectionBox.removeAllItems();
-        innerElementBox.removeAllItems();
-        if (selectedElement.getConnections().size() > 0)
-        {
-            for (Connection temp : selectedElement.getConnections())
-            {
-                connectionBox.addItem(temp.toString());
-            }
-        }
-        if (selectedElement.getInnerElements().size() > 0)
-        {
-            for (Element temp : selectedElement.getInnerElements())
-            {
-                innerElementBox.addItem(temp.toString());
-            }
-        }
+        updateBoxModelToModel();
+        updateInnerElementBox();
+        updateConnectionBox();
+        updateBoxModelToElement();
     }
 
+    /**
+     * Attribute button action, enables all String Array buttons (attributes, Operations, responsibilities and notes) disables the attribute button, sets the label of the text field to attribute and loads the attribute text into the to text field.
+     * 
+     * @param evt button pressed event
+     */
     private void editAttributesButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editAttributesButtonActionPerformed
     {//GEN-HEADEREND:event_editAttributesButtonActionPerformed
         if (selectedElement != null)
         {
+            enableButtons();
+            editAttributesButton.setEnabled(false);
+            labelTextfield.setText("Attributes:");
             stringArrayEditor.setText(attributes);
             activeEditorField = 1;
         }
     }//GEN-LAST:event_editAttributesButtonActionPerformed
 
+    /**
+     * Operations button action, enables all String Array buttons (attributes, Operations, responsibilities and notes) disables the operations button, sets the label of the text field to operations and loads the operations text into the to text field.
+     * 
+     * @param evt button pressed event
+     */
     private void editOperationsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editOperationsButtonActionPerformed
     {//GEN-HEADEREND:event_editOperationsButtonActionPerformed
         if (selectedElement != null)
         {
+            enableButtons();
+            editOperationsButton.setEnabled(false);
+            labelTextfield.setText("Operations:");
             stringArrayEditor.setText(operations);
             activeEditorField = 2;
         }
     }//GEN-LAST:event_editOperationsButtonActionPerformed
 
+    /**
+     * Responsibilities button action, enables all String Array buttons (attributes, Operations, responsibilities and notes) disables the responsibilities button, sets the label of the text field to responsibilities and loads the responsibilities text into the to text field.
+     * 
+     * @param evt button pressed event
+     */
     private void editResponsibiltiesButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editResponsibiltiesButtonActionPerformed
     {//GEN-HEADEREND:event_editResponsibiltiesButtonActionPerformed
         if (selectedElement != null)
         {
+            enableButtons();
+            editResponsibiltiesButton.setEnabled(false);
+            labelTextfield.setText("Responsibilities");
             stringArrayEditor.setText(responsibilities);
             activeEditorField = 3;
         }
     }//GEN-LAST:event_editResponsibiltiesButtonActionPerformed
 
+    /**
+     * Notes button action, enables all String Array buttons (attributes, Operations, responsibilities and notes) disables the notes button, sets the label of the text field to notes and loads the notes text into the to text field.
+     * 
+     * @param evt button pressed event
+     */
     private void editNotesButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editNotesButtonActionPerformed
     {//GEN-HEADEREND:event_editNotesButtonActionPerformed
         if (selectedElement != null)
         {
+            enableButtons();
+            editNotesButton.setEnabled(false);
+            labelTextfield.setText("Notes: ");
             stringArrayEditor.setText(notes);
             activeEditorField = 4;
         }
     }//GEN-LAST:event_editNotesButtonActionPerformed
 
+    /**
+     * Stores the value of the text field to the appropriate string.
+     * 
+     * @param evt focus lost event
+     */
     private void stringArrayEditorFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event_stringArrayEditorFocusLost
     {//GEN-HEADEREND:event_stringArrayEditorFocusLost
         if (activeEditorField == 1)
@@ -625,42 +890,73 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_stringArrayEditorFocusLost
 
+    /**
+     * Calls the saveChanges() methods to save changes, calls the updateList() method as well afterwards to make sure the element list is updated. 
+     * 
+     * @param evt button pressed event
+     */
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
     {//GEN-HEADEREND:event_saveButtonActionPerformed
         saveChanges();
         updateList();
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    /**
+     * 
+     * 
+     * @param evt button pressed event
+     */
     private void editConnectionButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editConnectionButtonActionPerformed
     {//GEN-HEADEREND:event_editConnectionButtonActionPerformed
-        String connectionID = connectionBox.getSelectedItem().toString();
-        connectionID = guiController.getIDFromBox(connectionID);
-        Connection connection = guiController.findConnection(connectionID);
-        connectionFrame = new JFrame();
-        ConnectionGUI connectionGUI = new ConnectionGUI(connection, guiController);
-        connectionFrame.add(connectionGUI);
-        connectionFrame.pack();
-        connectionFrame.setVisible(true);
-
+        if (selectedElement != null)
+        {
+            if (connectionBox.getSelectedIndex() != -1)
+            {
+                String connectionID = connectionBox.getSelectedItem().toString();
+                connectionID = guiController.getIDFromBox(connectionID);
+                guiController.editConnection(connectionID);
+                updateConnectionBox();
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Select an connection first.");
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Select an element first.");
+        }
     }//GEN-LAST:event_editConnectionButtonActionPerformed
 
     private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_removeConnectionButtonActionPerformed
     {//GEN-HEADEREND:event_removeConnectionButtonActionPerformed
-        String connectionID = connectionBox.getSelectedItem().toString();
-        connectionID = guiController.getIDFromBox(connectionID);
-        Connection connectionToBeRemoved = guiController.findConnection(connectionID);
-        selectedElement.getConnections().remove(connectionToBeRemoved);
+        if (selectedElement != null)
+        {
+            if (connectionBox.getSelectedIndex() != -1)
+            {
+                String connectionID = connectionBox.getSelectedItem().toString();
+                connectionID = guiController.getIDFromBox(connectionID);
+                Connection connectionToBeRemoved = guiController.findConnection(connectionID);
+                selectedElement.getConnections().remove(connectionToBeRemoved);
+                updateConnectionBox();
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Select an connection first.");
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Select an element first.");
+        }
     }//GEN-LAST:event_removeConnectionButtonActionPerformed
 
     private void newConnectionButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newConnectionButtonActionPerformed
     {//GEN-HEADEREND:event_newConnectionButtonActionPerformed
         if (selectedElement != null)
         {
-            connectionFrame = new JFrame();
-            ConnectionGUI connectionGUI = new ConnectionGUI(selectedElement, guiController);
-            connectionFrame.add(connectionGUI);
-            connectionFrame.pack();
-            connectionFrame.setVisible(true);
+            guiController.createNewConnection(selectedElement);
+            updateConnectionBox();
         }
         else
         {
@@ -684,46 +980,58 @@ public class ElementGUI extends javax.swing.JPanel
         stringArrayEditor.setText("");
         selectedElement = new Element(nextElementId, boxType.getItemAt(0));
         guiController.addElement(selectedElement);
-        updateBoxes();
-        updateArrays();
-        updateList();
+        updateGUI();
     }//GEN-LAST:event_newElementButtonActionPerformed
 
     private void connectionBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)//GEN-FIRST:event_connectionBoxPopupMenuWillBecomeVisible
     {//GEN-HEADEREND:event_connectionBoxPopupMenuWillBecomeVisible
-        updateBoxes();
+        updateConnectionBox();
         this.revalidate();
     }//GEN-LAST:event_connectionBoxPopupMenuWillBecomeVisible
 
     private void removeInnerElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_removeInnerElementButtonActionPerformed
     {//GEN-HEADEREND:event_removeInnerElementButtonActionPerformed
-        Object[] options =
+        if (selectedElement != null)
         {
-            "Yes, delete",
-            "No, don't delete"
-        };
-        int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete the selected inner element?", "Delete inner element?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-        if (n == 0)
+            Object[] options =
+            {
+                "Yes, delete",
+                "No, don't delete"
+            };
+            int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete the selected inner element?", "Delete inner element?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+            if (n == 0)
+            {
+                String innerElementID = innerElementBox.getSelectedItem().toString();
+                innerElementID = guiController.getIDFromBox(innerElementID);
+                guiController.removeElement(innerElementID);
+            }
+        }
+        else
         {
-            String innerElementID = innerElementBox.getSelectedItem().toString();
-            innerElementID = guiController.getIDFromBox(innerElementID);
-            guiController.removeElement(innerElementID);
+            JOptionPane.showMessageDialog(this, "Select an element first.");
         }
     }//GEN-LAST:event_removeInnerElementButtonActionPerformed
 
     private void removeElementActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_removeElementActionPerformed
     {//GEN-HEADEREND:event_removeElementActionPerformed
-        Object[] options =
+        if (selectedElement != null)
         {
-            "Yes, delete",
-            "No, don't delete"
-        };
-        int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete the selected element?", "Delete element?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-        if (n == 0)
+            Object[] options =
+            {
+                "Yes, delete",
+                "No, don't delete"
+            };
+            int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete the selected element?", "Delete element?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+            if (n == 0)
+            {
+                guiController.removeElement(selectedElement.getIdentifier());
+                selectedElement = null;
+                updateList();
+            }
+        }
+        else
         {
-            guiController.removeElement(selectedElement.getIdentifier());
-            selectedElement = null;
-            updateList();
+            JOptionPane.showMessageDialog(this, "Select an element first.");
         }
     }//GEN-LAST:event_removeElementActionPerformed
 
@@ -731,6 +1039,7 @@ public class ElementGUI extends javax.swing.JPanel
     {//GEN-HEADEREND:event_newInnerElementButtonActionPerformed
         if (selectedElement != null)
         {
+            saveChanges();
             String nextElementId = guiController.findNextAvailableElementID();
             fieldIdentifier.setText(nextElementId);
             fieldDescription.setText("");
@@ -747,9 +1056,7 @@ public class ElementGUI extends javax.swing.JPanel
             selectedElement.getInnerElements().add(newInnerElement);
             guiController.loadAllInstances();
             selectedElement = guiController.findElement(newInnerElement.getIdentifier());
-            updateBoxes();
-            updateArrays();
-            updateList();
+            updateGUI();
         }
         else
         {
@@ -759,14 +1066,153 @@ public class ElementGUI extends javax.swing.JPanel
 
     private void innerElementBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)//GEN-FIRST:event_innerElementBoxPopupMenuWillBecomeVisible
     {//GEN-HEADEREND:event_innerElementBoxPopupMenuWillBecomeVisible
-        updateBoxes();
+        updateInnerElementBox();
         this.revalidate();
     }//GEN-LAST:event_innerElementBoxPopupMenuWillBecomeVisible
 
+    private void linkModelToMActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_linkModelToMActionPerformed
+    {//GEN-HEADEREND:event_linkModelToMActionPerformed
+        // sets it to only accept files
+        linkFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        //opens the file selection pane and sets the file path
+        int returnValue = linkFileChooser.showOpenDialog(null);
+        File linkedFile = null;
+
+        if (returnValue == JFileChooser.APPROVE_OPTION)
+        {
+            linkedFile = linkFileChooser.getSelectedFile();
+            String path = guiController.getRelativePath(linkedFile);
+            guiController.addLinkedModel(path);
+            updateBoxModelToModel();
+        }
+    }//GEN-LAST:event_linkModelToMActionPerformed
+
+    private void loadLinkedModelMActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadLinkedModelMActionPerformed
+    {//GEN-HEADEREND:event_loadLinkedModelMActionPerformed
+        if (boxModelToModel.getSelectedItem() != null)
+        {
+            saveChanges();
+            guiController.saveChanges();
+            guiController.loadLinkedModel(boxModelToModel.getSelectedItem().toString());
+            selectedElement = null;
+            updateGUI();
+        }
+    }//GEN-LAST:event_loadLinkedModelMActionPerformed
+
+    private void delinkModelFromMActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delinkModelFromMActionPerformed
+    {//GEN-HEADEREND:event_delinkModelFromMActionPerformed
+        if (boxModelToModel.getSelectedItem() != null)
+        {
+            String link = boxModelToModel.getSelectedItem().toString();
+            {
+                if (guiController.getModel().getLinkedModels().contains(link))
+                {
+
+                    guiController.getModel().getLinkedModels().remove(link);
+                    updateBoxModelToModel();
+                }
+            }
+        }
+    }//GEN-LAST:event_delinkModelFromMActionPerformed
+
+    private void linkModelToEActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_linkModelToEActionPerformed
+    {//GEN-HEADEREND:event_linkModelToEActionPerformed
+        if (selectedElement != null)
+        {
+            // sets it to only accept files
+            linkFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+            //opens the file selection pane and sets the file path
+            int returnValue = linkFileChooser.showOpenDialog(null);
+            File linkedFile = null;
+
+            if (returnValue == JFileChooser.APPROVE_OPTION)
+            {
+                linkedFile = linkFileChooser.getSelectedFile();
+                String path = guiController.getRelativePath(linkedFile);
+                selectedElement.getLinkedModels().add(path);
+                updateBoxModelToElement();
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Select an element first.");
+        }
+    }//GEN-LAST:event_linkModelToEActionPerformed
+
+    private void loadLinkedModelEActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadLinkedModelEActionPerformed
+    {//GEN-HEADEREND:event_loadLinkedModelEActionPerformed
+        if (selectedElement != null && boxModelToElement.getSelectedItem() != null)
+        {
+            saveChanges();
+            guiController.saveChanges();
+            guiController.loadLinkedModel(boxModelToElement.getSelectedItem().toString());
+            selectedElement = null;
+            updateGUI();
+        }
+    }//GEN-LAST:event_loadLinkedModelEActionPerformed
+
+    private void delinkModelFromEActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delinkModelFromEActionPerformed
+    {//GEN-HEADEREND:event_delinkModelFromEActionPerformed
+        if (selectedElement != null && boxModelToElement.getSelectedItem() != null)
+        {
+            String link = boxModelToElement.getSelectedItem().toString();
+            {
+                if (selectedElement.getLinkedModels().contains(link))
+                {
+
+                    selectedElement.getLinkedModels().remove(link);
+                    updateBoxModelToElement();
+                }
+            }
+        }
+    }//GEN-LAST:event_delinkModelFromEActionPerformed
+
+    private void editInnerElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editInnerElementButtonActionPerformed
+    {//GEN-HEADEREND:event_editInnerElementButtonActionPerformed
+        if (selectedElement != null)
+        {
+            saveChanges();
+            String lookup = innerElementBox.getSelectedItem().toString();
+            lookup = guiController.getIDFromBox(lookup);
+            selectedElement = guiController.findElement(lookup);
+            String type = selectedElement.getType();
+            boxType.setSelectedItem(type);
+            fieldIdentifier.setText(selectedElement.getIdentifier());
+            fieldDescription.setText(selectedElement.getDescription());
+            fieldStartLevel.setText(Integer.toString(selectedElement.getStartLevel()));
+            fieldEndLevel.setText(Integer.toString(selectedElement.getEndLevel()));
+            fieldTeminationLevel.setText(Integer.toString(selectedElement.getterminationLevel()));
+            attributes = "";
+            operations = "";
+            responsibilities = "";
+            notes = "";
+            activeEditorField = 0;
+            stringArrayEditor.setText("");
+            updateArrays();
+            updateBoxes();
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Select an element first.");
+        }
+    }//GEN-LAST:event_editInnerElementButtonActionPerformed
+
+    private void updateGUI()
+    {
+        updateList();
+        updateBoxes();
+        updateArrays();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> boxModelToElement;
+    private javax.swing.JComboBox<String> boxModelToModel;
     private javax.swing.JComboBox<String> boxType;
     private javax.swing.JComboBox<String> connectionBox;
+    private javax.swing.JButton delinkModelFromE;
+    private javax.swing.JButton delinkModelFromM;
     private javax.swing.JButton editAttributesButton;
     private javax.swing.JButton editConnectionButton;
     private javax.swing.JButton editInnerElementButton;
@@ -783,17 +1229,22 @@ public class ElementGUI extends javax.swing.JPanel
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelTextfield;
+    private javax.swing.JButton linkModelToE;
+    private javax.swing.JButton linkModelToM;
     private java.awt.List listElements;
+    private javax.swing.JButton loadLinkedModelE;
+    private javax.swing.JButton loadLinkedModelM;
     private javax.swing.JButton newConnectionButton;
     private javax.swing.JButton newElementButton;
     private javax.swing.JButton newInnerElementButton;
@@ -804,4 +1255,12 @@ public class ElementGUI extends javax.swing.JPanel
     private javax.swing.JEditorPane stringArrayEditor;
     // End of variables declaration//GEN-END:variables
 
+    private void enableButtons()
+    {        
+        labelTextfield.setText("Nothing selected:");
+        editAttributesButton.setEnabled(true);
+        editNotesButton.setEnabled(true);
+        editResponsibiltiesButton.setEnabled(true);
+        editOperationsButton.setEnabled(true);
+    }
 }

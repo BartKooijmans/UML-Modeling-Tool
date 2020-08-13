@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    finalproject.ElementGUITest.class, finalproject.ConnectionTest.class, finalproject.ModelControllerTest.class, finalproject.ModelTest.class, finalproject.MainControllerTest.class, finalproject.ElementTest.class, finalproject.MainMenuTest.class, finalproject.ConnectionGUITest.class
+    finalproject.ElementGUITest.class, finalproject.ConnectionTest.class, finalproject.ModelControllerTest.class, finalproject.ModelTest.class, finalproject.MainControllerTest.class, finalproject.ElementTest.class, finalproject.ConnectionGUITest.class
 })
 public class FinalprojectSuite
 {

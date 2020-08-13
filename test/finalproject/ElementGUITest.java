@@ -70,7 +70,7 @@ public class ElementGUITest
         File jsonTestLoadFile = new File("C:/Users/Botje/Documents/test.json");
         Scanner fileScanner = new Scanner(new BufferedReader(new FileReader(jsonTestLoadFile)));
         mainTestController = new MainController();
-        mainTestController.loadEModel(fileScanner);
+        mainTestController.loadEModel(fileScanner,"C:/Users/Botje/Documents/");
         ElementGUI instance = new ElementGUI(mainTestController);
         assertNotNull(instance);
     }

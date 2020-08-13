@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Main class of the UML modeling tool project starts the application and creates the main menu and relevant controller class.
  */
 package finalproject;
 
@@ -21,11 +19,12 @@ public class MainMenu
 {
 
     /**
+     * Main method that Starts the application
+     * 
      * @param args the command line arguments
      */
     public static void main(String[] args)
     {
-        // TODO code application logic here
         MainMenu app = new MainMenu();
     }
 
@@ -34,18 +33,20 @@ public class MainMenu
     private JMenu mainMenu;
     private JPanel detailsPanel;
     private MainController mainController;
+    //4 main menu items
     private JMenuItem start = new JMenuItem("new Model");
     private JMenuItem save = new JMenuItem("Save Model");
     private JMenuItem load = new JMenuItem("Load Model");
     private JMenuItem close = new JMenuItem("Exit");
     private JFrame mainFrame; // The main frame containg the different game elements.
-    private int option; //Int the choice to representing the output to close the menu.
     private JFileChooser saveFileChooser;
-    private FileNameExtensionFilter filter;
 
-    //Below the list of options for supported diagrams
+    //Array used to store the options for supported diagrams
     private Object[] supportedDiagrams;
 
+    /**
+     * Main constructor for the Main Menu class, creates and set the main menu and an empty main panel and initialises the main controller
+     */
     protected MainMenu()
     {
         exit = false;
@@ -57,16 +58,19 @@ public class MainMenu
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
         mainFrame.setTitle("UML Model Manager");
-        mainController = new MainController();
-        saveFileChooser = new JFileChooser();
-        filter = new FileNameExtensionFilter(
-                "JavaScript Object Notation", "json");
-        saveFileChooser.setFileFilter(filter);
-        supportedDiagrams = mainController.getSupportedModels();
+        mainController = new MainController();        
+        saveFileChooser = new JFileChooser(); //File selector for loading and saving files
+        saveFileChooser.setFileFilter(mainController.getJSONfilter()); //Sets the filter for the file selector to just displaying .json files.
+        supportedDiagrams = mainController.getSupportedModels(); //Fills the array of supported models.
         startMenu();
 
     }
 
+    /**
+     * Returns the main menu.
+     * 
+     * @return Main menu bar with the 4 options, Start (new model), save (save model), load (load model), 
+     */
     private JMenuBar createMainMenu()
     {
         mainMenuBar = new JMenuBar();
@@ -83,31 +87,21 @@ public class MainMenu
     }
 
     /**
-     * Keeps the main frame running and awaiting input
+     * Keeps the main frame and checks continously if elements are present within the model to see if it should allow for the saving of the model.
      */
     private void startMenu()
     {
         setMenuInput();
         while (exit == false)
         {
-            option = 0;
-            Scanner kb = new Scanner(System.in);
-            while (option != 1 && option == 1)
-            {
-                try
+                if (mainController.getModel() != null && mainController.getModel().getElementPresent() == true)
                 {
-                    option = Integer.parseInt(kb.nextLine());
-                    if (option == 1)
-                    {
-
-                    }
+                    save.setEnabled(true);
                 }
-                catch (NumberFormatException e)
+                else
                 {
-                    System.out.println("Error");
+                    save.setEnabled(false);
                 }
-            }
-            exit = true;
         }
     }
 
@@ -150,6 +144,9 @@ public class MainMenu
         });
     }
 
+    /**
+     * Check if there is a current model with elements open asks to save if there is and calls the createModel() function to create a new model.
+     */
     private void newModel()
     {
         if (mainController.getModel() != null && mainController.getModel().getElementPresent() == true)
@@ -177,12 +174,15 @@ public class MainMenu
         }
     }
 
+    /**
+     * Creates a popup requesting the user to select the desired model type from a dropdown box passes it on to the main controller to create the request new model and updates the UI with the model management UI.
+     */
     private void createModel()
     {
 
         String s = (String) JOptionPane.showInputDialog(
                 mainFrame,
-                "What kind of model would yoy like to create:\n",
+                "What kind of model would you like to create:\n",
                 "Model Type",
                 JOptionPane.PLAIN_MESSAGE,
                 null,
@@ -195,6 +195,9 @@ public class MainMenu
         }
     }
 
+    /**
+     * Check if there is a current model with elements open asks to save if there is and calls the loadExistingModel() function to load a file containing a model.
+     */
     private void loadModel()
     {
         if (mainController.getModel() != null && mainController.getModel().getElementPresent() == true)
@@ -223,6 +226,9 @@ public class MainMenu
 
     }
 
+    /**
+     * Creates the pop up window to select the file to be loaded, attempts to open the file scanner, than passes it with the file path on to the maincontroller to load the model with the loadEModel()
+     */     
     private void loadExistingModel()
     {
         // sets it to only accept files
@@ -242,7 +248,7 @@ public class MainMenu
             try
             {
                 fileScanner = new Scanner(new BufferedReader(new FileReader(jsonFile)));
-                mainController.loadEModel(fileScanner);
+                mainController.loadEModel(fileScanner, jsonFile.getParent());
                 addElementManagenementUI();
             }
             catch (FileNotFoundException ex)
@@ -252,6 +258,9 @@ public class MainMenu
         }
     }
 
+    /**
+     * Adds the element management part to the UI and resizes
+     */
     private void addElementManagenementUI()
     {
         detailsPanel = mainController.updateUI();
@@ -261,9 +270,11 @@ public class MainMenu
         mainMenu.repaint();
     }
 
+    /**
+     * Opens the file selector for the save file, adds the .json file extension at the end if it was missing and passes the file on to the main controller via the savingModel() function who will save the active model in the file
+     */
     private void saveModel()
     {
-        Model temp = mainController.getModel();
         File jsonFile = null;
         String path = null;
         saveFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -286,15 +297,18 @@ public class MainMenu
             jsonFile = new File(path);
             if (jsonFile.exists() == true)
             {
-                mainController.savingModel(temp, jsonFile);
+                mainController.savingModel(jsonFile);
             }
             else
             {
-                mainController.savingModel(temp, jsonFile);
+                mainController.savingModel(jsonFile);
             }
         }
     }
 
+    /**
+     * Checks if a model is ope, if it is asks if they want to save it before closing, closes the application. 
+     */
     private void closeModel()
     {
         if (mainController.getModel() != null && mainController.getModel().getElementPresent() == true)

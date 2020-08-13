@@ -5,6 +5,9 @@
  */
 package finalproject;
 
+import java.awt.event.WindowEvent;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,9 +17,10 @@ import javax.swing.JOptionPane;
 public class ConnectionGUI extends javax.swing.JPanel
 {
 
-    Connection activeConnection;
-    Element startingElement;
-    MainController guiController;
+    private Connection activeConnection;
+    private Element startingElement;
+    private MainController guiController;
+    private JFileChooser linkFileChooser = new JFileChooser();
 
     /**
      * Creates new form ConnectionGUI
@@ -25,8 +29,12 @@ public class ConnectionGUI extends javax.swing.JPanel
     {
         guiController = modelGuiController;
         startingElement = startElement;
+        activeConnection = new Connection();
+        String ID = guiController.findNextAvailableConnectionID();
+        activeConnection.setID(ID);
         createFields();
-        fieldIdentifier.setText(guiController.findNextAvailableConnectionID());
+        updateBoxModelToConnection();
+        fieldIdentifier.setText(ID);
     }
 
     public ConnectionGUI(Connection lConnection, MainController modelGuiController)
@@ -34,6 +42,12 @@ public class ConnectionGUI extends javax.swing.JPanel
         guiController = modelGuiController;
         activeConnection = lConnection;
         createFields();
+        updateBoxModelToConnection();
+        boxType.setSelectedItem(activeConnection.getType());
+        if(activeConnection.getEndElement() != null)
+        {
+            endElementBox.setSelectedItem(activeConnection.getEndElement().toString());
+        }
         fieldIdentifier.setText(activeConnection.getIdentifier());
         if (activeConnection.getBottomCenter() != null)
         {
@@ -81,6 +95,16 @@ public class ConnectionGUI extends javax.swing.JPanel
         {
             endElementBox.addItem(element.toString());
         }
+        linkFileChooser.setFileFilter(guiController.getJSONfilter());
+    }
+
+    protected void updateBoxModelToConnection()
+    {
+        boxLinkedModelC.removeAllItems();
+        for (String temp : activeConnection.getLinkedModels())
+        {
+            boxLinkedModelC.addItem(temp);
+        }
     }
 
     /**
@@ -117,6 +141,10 @@ public class ConnectionGUI extends javax.swing.JPanel
         endElementBox = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         fieldLevel = new javax.swing.JTextField();
+        boxLinkedModelC = new javax.swing.JComboBox<>();
+        loadLinkedModelC = new javax.swing.JButton();
+        linkModelToC = new javax.swing.JButton();
+        unlinkModelFromC = new javax.swing.JButton();
 
         jLabel2.setText("Type:");
 
@@ -181,6 +209,33 @@ public class ConnectionGUI extends javax.swing.JPanel
         fieldLevel.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         fieldLevel.setAlignmentX(0.0F);
 
+        loadLinkedModelC.setText("Load linked model");
+        loadLinkedModelC.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                loadLinkedModelCActionPerformed(evt);
+            }
+        });
+
+        linkModelToC.setText("Add linked model");
+        linkModelToC.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                linkModelToCActionPerformed(evt);
+            }
+        });
+
+        unlinkModelFromC.setText("Remove linked model");
+        unlinkModelFromC.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                unlinkModelFromCActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,7 +273,15 @@ public class ConnectionGUI extends javax.swing.JPanel
                                     .addComponent(fieldEndText)
                                     .addComponent(fieldEndMulti)
                                     .addComponent(endElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(fieldLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(fieldLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(boxLinkedModelC, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(loadLinkedModelC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(unlinkModelFromC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(linkModelToC, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -239,39 +302,48 @@ public class ConnectionGUI extends javax.swing.JPanel
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(fieldTopCenter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(fieldTopCenter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(linkModelToC))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addComponent(fieldBottomCenter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(fieldBottomCenter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(boxLinkedModelC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(fieldStartText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(fieldStartText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(loadLinkedModelC)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
-                    .addComponent(fieldStartMulti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(fieldStartMulti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(unlinkModelFromC)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel8)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel9))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(fieldLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))
+                        .addGap(7, 7, 7)
+                        .addComponent(jLabel12))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(fieldEndText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fieldEndMulti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(5, 5, 5)
-                        .addComponent(endElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fieldLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addGap(7, 7, 7)
-                .addComponent(jLabel12)
+                        .addComponent(endElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -293,11 +365,54 @@ public class ConnectionGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    private void loadLinkedModelCActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadLinkedModelCActionPerformed
+    {//GEN-HEADEREND:event_loadLinkedModelCActionPerformed
+        if (boxLinkedModelC.getSelectedItem() != null)
+        {
+            saveConnection();
+            guiController.saveChanges();
+            guiController.loadLinkedModel(boxLinkedModelC.getSelectedItem().toString());
+            guiController.closeConnection();
+        }
+    }//GEN-LAST:event_loadLinkedModelCActionPerformed
+
+    private void unlinkModelFromCActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_unlinkModelFromCActionPerformed
+    {//GEN-HEADEREND:event_unlinkModelFromCActionPerformed
+        String link = boxLinkedModelC.getSelectedItem().toString();
+        {
+            if (activeConnection.getLinkedModels().contains(link))
+            {
+
+                activeConnection.getLinkedModels().remove(link);
+                updateBoxModelToConnection();
+            }
+        }
+    }//GEN-LAST:event_unlinkModelFromCActionPerformed
+
+    private void linkModelToCActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_linkModelToCActionPerformed
+    {//GEN-HEADEREND:event_linkModelToCActionPerformed
+
+        // sets it to only accept files
+        linkFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        //opens the file selection pane and sets the file path
+        int returnValue = linkFileChooser.showOpenDialog(null);
+        File linkedFile = null;
+
+        if (returnValue == JFileChooser.APPROVE_OPTION)
+        {
+            linkedFile = linkFileChooser.getSelectedFile();
+            String path = guiController.getRelativePath(linkedFile);
+            activeConnection.getLinkedModels().add(path);
+            updateBoxModelToConnection();
+        }
+    }//GEN-LAST:event_linkModelToCActionPerformed
+
     private void saveConnection()
     {
-        if (activeConnection == null && startingElement != null)
+        if (startingElement != null)
         {
-            activeConnection = new Connection();
+
             saveCConnection();
             startingElement.addConnection(activeConnection);
         }
@@ -309,7 +424,7 @@ public class ConnectionGUI extends javax.swing.JPanel
     }
 
     private void saveCConnection()
-    {        
+    {
         activeConnection.setID(fieldIdentifier.getText());
         activeConnection.setType(boxType.getSelectedItem().toString());
         activeConnection.setBottomCenter(fieldBottomCenter.getText());
@@ -320,7 +435,7 @@ public class ConnectionGUI extends javax.swing.JPanel
             try
             {
                 int levelEntry = Integer.parseInt(fieldLevel.getText());
-                if(levelEntry >= 0)
+                if (levelEntry >= 0)
                 {
                     activeConnection.setLevel(levelEntry);
                 }
@@ -350,6 +465,7 @@ public class ConnectionGUI extends javax.swing.JPanel
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> boxLinkedModelC;
     private javax.swing.JComboBox<String> boxType;
     private javax.swing.JComboBox<String> endElementBox;
     private javax.swing.JTextField fieldBottomCenter;
@@ -372,7 +488,11 @@ public class ConnectionGUI extends javax.swing.JPanel
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton linkModelToC;
+    private javax.swing.JButton loadLinkedModelC;
     private javax.swing.JButton saveButton;
     private javax.swing.JEditorPane stringArrayEditor;
+    private javax.swing.JButton unlinkModelFromC;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -26,8 +26,9 @@ public class Element
     private int endLevel;
     private int terminantionLevel;
     private String notes;
+    private ArrayList<String> linkedModels; 
 
-    protected Element(String eIdentifier, String eType, String eDescription, ArrayList<String> eAttributes, ArrayList<String> eOperations, ArrayList<String> eResponsibilities, ArrayList<Connection> eConnections, ArrayList<Element> eInnerElements, int eStartLevel, int eEndLevel, int eTerminantionLevel, String eNotes)
+    protected Element(String eIdentifier, String eType, String eDescription, ArrayList<String> eAttributes, ArrayList<String> eOperations, ArrayList<String> eResponsibilities, ArrayList<Connection> eConnections, ArrayList<Element> eInnerElements, int eStartLevel, int eEndLevel, int eTerminantionLevel, String eNotes, ArrayList<String> eLinkedModels)
     {
         identifier = eIdentifier;
         type = eType;
@@ -41,6 +42,7 @@ public class Element
         endLevel = eEndLevel;
         terminantionLevel = eTerminantionLevel;
         notes = eNotes;
+        linkedModels = eLinkedModels;
     }
 
     protected Element(String nextElementId, String eType)
@@ -52,6 +54,7 @@ public class Element
         responsibilities = new ArrayList<String>();
         connections = new ArrayList<Connection>();
         innerElements = new ArrayList<Element>();
+        linkedModels = new ArrayList<String>();
     }
 
     String getIdentifier()
@@ -169,5 +172,10 @@ public class Element
     protected void addConnection(Connection activeConnection)
     {
         connections.add(activeConnection);
+    }
+
+    protected ArrayList<String> getLinkedModels()
+    {
+        return linkedModels;
     }
 }

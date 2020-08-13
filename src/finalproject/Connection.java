@@ -5,6 +5,8 @@
  */
 package finalproject;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Bart Kooijmans
@@ -23,13 +25,14 @@ public class Connection
     private int level;
     private String notes;
     private Element endElement;
-
+    private ArrayList<String> linkedModels;
+    
     protected Connection()
     {
-
+        linkedModels = new ArrayList<String>();
     }
 
-    protected Connection(String cIdentifier, String cType, String cTopCenter, String cBottomCenter, String cDescriptionStart, String cMultiplicityStart, String cDescriptionEnd, String cMultiplicityEnd, String cEndElement, int cLevel, String cNotes)
+    protected Connection(String cIdentifier, String cType, String cTopCenter, String cBottomCenter, String cDescriptionStart, String cMultiplicityStart, String cDescriptionEnd, String cMultiplicityEnd, String cEndElement, int cLevel, String cNotes, ArrayList<String> cLinkedModels)
     {
         identifier = cIdentifier;
         type = cType;
@@ -42,9 +45,10 @@ public class Connection
         endElementID = cEndElement;
         level = cLevel;
         notes = cNotes;
+        linkedModels = cLinkedModels;
     }
 
-    protected Connection(String cIdentifier, String cType, String cTopCenter, String cBottomCenter, String cDescriptionStart, String cMultiplicityStart, String cDescriptionEnd, String cMultiplicityEnd, Element cEndElement, int cLevel, String cNotes)
+    protected Connection(String cIdentifier, String cType, String cTopCenter, String cBottomCenter, String cDescriptionStart, String cMultiplicityStart, String cDescriptionEnd, String cMultiplicityEnd, Element cEndElement, int cLevel, String cNotes, ArrayList<String> cLinkedModels)
     {
         identifier = cIdentifier;
         type = cType;
@@ -58,6 +62,7 @@ public class Connection
         level = cLevel;
         notes = cNotes;
         endElementID = cEndElement.getIdentifier();
+        linkedModels = cLinkedModels;
     }
 
     protected String getIdentifier()
@@ -182,8 +187,13 @@ public class Connection
         return temp;
     }
 
-    void setType(String cType)
+    protected void setType(String cType)
     {
         type = cType;
+    }
+
+    protected ArrayList<String> getLinkedModels()
+    {
+        return linkedModels;
     }
 }

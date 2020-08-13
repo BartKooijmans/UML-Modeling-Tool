@@ -5,7 +5,7 @@
             <url>src/finalproject/ModelController.java</url>
             <bookmark id="1">
                 <name/>
-                <line>16</line>
+                <line>15</line>
                 <key/>
             </bookmark>
         </file>
@@ -13,14 +13,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/ConnectionGUI.java</file>
-            <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/test/finalproject/ElementTest.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/Connection.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/MainMenu.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/Element.java</file>
-            <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/test/finalproject/MainControllerTest.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/Model.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/ElementGUI.java</file>
-            <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/test/finalproject/ModelTest.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/ModelController.java</file>
             <file>file:/C:/Users/Botje/Desktop/Computing%20and%20IT/TM470/FinalProject/src/finalproject/MainController.java</file>
         </group>

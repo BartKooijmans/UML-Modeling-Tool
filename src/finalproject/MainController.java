@@ -1,15 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Main controller class contains the functionality behind  the interface for the program.
  */
 package finalproject;
 
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -23,46 +26,102 @@ public class MainController
     private ArrayList<Connection> allConnections = new ArrayList<Connection>();
     private Element parentElement;
     private Model activeModel;
+    private FileNameExtensionFilter filter;
+    private String pathLoadedModel;
+    private ElementGUI uiPanel;
+    private JFrame connectionFrame;
 
+    /**
+     * Constructor for MainController class
+     */
     protected MainController()
     {
         modelController = new ModelController();
+        filter = new FileNameExtensionFilter(
+                "JavaScript Object Notation", "json");
     }
 
+    /**
+     * Get function for Object array of supported models, uses the getDiagrams()
+     * function of the ModelController class
+     *
+     * @return an Object array of supported models
+     */
     protected Object[] getSupportedModels()
     {
         return modelController.getDiagrams();
     }
 
+    /**
+     * Get function for TreeList of Strings reflecting the allowed element types
+     * based on the model type, uses the getElements() function of the
+     * ModelController class
+     *
+     * @return an String TreeList of allowed element types based on the model
+     * type
+     */
     protected TreeSet<String> getAllowedElements()
     {
         return modelController.getElements(activeModel.getModelType());
     }
 
+    /**
+     * Get function for TreeList of Strings reflecting the allowed connections
+     * types based on the model type, uses the getConnection() function of the
+     * ModelController class
+     *
+     * @return an String TreeList of allowed connection types based on the model
+     * type
+     */
     protected TreeSet<String> getAllowedConnections()
     {
         return modelController.getConnection(activeModel.getModelType());
     }
 
+    /**
+     * Get function for the active model
+     *
+     * @return the active model
+     */
     protected Model getModel()
     {
         return activeModel;
     }
 
+    /**
+     * Set function for a new model of the given type
+     *
+     * @param s String reflecting the model type
+     */
     protected void newModel(String s)
     {
         Model n = new Model(s);
         activeModel = n;
     }
 
-    protected void existingModel(String type, boolean present, ArrayList<Element> existingE)
+    /**
+     * Set function for a loaded existing model
+     *
+     * @param type String reflecting the type of the model
+     * @param present boolean reflecting if elements aare present within the
+     * model, true for yes false for none.
+     * @param existingE ArrayList of Elements containing the top elements within
+     * the model which contain all the remaining elements and connections
+     * @param existingL ArrayList of Strings containing the relative paths to
+     * model files that were linked to the model as a whole
+     */
+    protected void existingModel(String type, boolean present, ArrayList<Element> existingE, ArrayList<String> existingL)
     {
-        Model n = new Model(type, present, existingE);
+        Model n = new Model(type, present, existingE, existingL);
         activeModel = n;
         loadAllInstances();
         linkModelConnections();
     }
 
+    /**
+     * Links the connections to the actual element object instances based on the
+     * element ID.
+     */
     private void linkModelConnections()
     {
         for (Connection tempConnection : allConnections)
@@ -77,6 +136,12 @@ public class MainController
         }
     }
 
+    /**
+     * Creates/updates ArrayList containing all the different elements
+     * (allElements) and connections (allConnections) contained within the
+     * model, including inner elements and their connections. Uses the
+     * loadAllInnerElements() function to add all the inner elements
+     */
     protected void loadAllInstances()
     {
         allElements.clear();
@@ -90,12 +155,15 @@ public class MainController
         {
             allConnections.addAll(tempElement2.getConnections());
         }
-        for (Element tempElement : allElements)
-        {
-            System.out.println(tempElement.toString());
-        }
     }
 
+    /**
+     * Function that adds the inner elements of an element to the ArraList
+     * allElements Recursive function
+     *
+     * @param tempElement element of which gets checked for inner elements to be
+     * checked and added *
+     */
     private void loadAllInnerElements(Element tempElement)
     {
         for (Element tempInnerElement : tempElement.getInnerElements())
@@ -105,17 +173,37 @@ public class MainController
         }
     }
 
-    protected JPanel updateUI()
+    /**
+     * returns the Element UI reflecting the current active model.
+     *
+     * @return an update ElementGUI based on the current active model within the
+     * mainController
+     */
+    protected ElementGUI updateUI()
     {
-        JPanel uiPanel = new ElementGUI(this);
+        uiPanel = new ElementGUI(this);
         return uiPanel;
     }
 
+    /**
+     * Get function for all elements within the model.
+     *
+     * @return ArrayList of Elements containing all individual Element objects
+     * within the model
+     */
     protected ArrayList<Element> getElements()
     {
         return allElements;
     }
 
+    /**
+     * Looks for an Element within all elements in the model based on the given
+     * element ID.
+     *
+     * @param lookup String containing the element ID
+     * @return null if the element is not found or the Element object instance
+     * if it is found.
+     */
     protected Element findElement(String lookup)
     {
         for (Element search : allElements)
@@ -128,6 +216,14 @@ public class MainController
         return null;
     }
 
+    /**
+     * Looks for an Connection within all Connections in the model based on the
+     * given connection ID.
+     *
+     * @param connectionID String containing the connection ID
+     * @return null if the connection is not found or the Connection object
+     * instance if it is found.
+     */
     protected Connection findConnection(String connectionID)
     {
         for (Connection search : allConnections)
@@ -140,6 +236,11 @@ public class MainController
         return null;
     }
 
+    /**
+     * Looks for the next available unique Connection ID within the model
+     *
+     * @return a unique, within the model, Connection ID.
+     */
     protected String findNextAvailableConnectionID()
     {
         int i = 0;
@@ -160,6 +261,11 @@ public class MainController
         return lookup;
     }
 
+    /**
+     * Looks for the next available unique Element ID within the model
+     *
+     * @return a unique, within the model, Element ID.
+     */
     protected String findNextAvailableElementID()
     {
         int i = 0;
@@ -180,11 +286,20 @@ public class MainController
         return lookup;
     }
 
-    protected void loadEModel(Scanner fileScanner)
+    /**
+     * Loads the model from the given fileScanner. Calls the loadElement()
+     * function to load the elements and adds them to the ArrayList of elements
+     *
+     * @param fileScanner filScanner containing the file to be loaded.
+     * @param path path of the file to be loaded.
+     */
+    protected void loadEModel(Scanner fileScanner, String path)
     {
+        pathLoadedModel = path.replace("\\", "/");;
         String type = null;
         boolean existing = false;
         ArrayList<Element> existingE = new ArrayList<Element>();
+        ArrayList<String> existingLinks = new ArrayList<String>();
 
         try
         {
@@ -206,20 +321,31 @@ public class MainController
                     existingE.add(loadElement(fileScanner));
                     while (fileScanner.hasNextLine())
                     {
-                        if (fileScanner.nextLine().startsWith("{"))
+                        temp = fileScanner.nextLine().trim();
+                        if (temp.startsWith("{"))
                         {
                             existingE.add(loadElement(fileScanner));
+                        }
+                        else if (temp.startsWith("\"linked models\":  ["))
+                        {
+                            temp = fileScanner.nextLine().trim();
+                            while (temp.startsWith("],") == false)
+                            {
+                                temp = temp.substring(1, (temp.length() - 2));
+                                existingLinks.add(temp);
+                                temp = fileScanner.nextLine().trim();
+                            }
                         }
                     }
                 }
                 else
                 {
-                    temp = fileScanner.nextLine().trim();
+
                 }
 
             }
 
-            this.existingModel(type, existing, existingE);
+            this.existingModel(type, existing, existingE, existingLinks);
         }
         catch (Exception aException)
         {
@@ -238,6 +364,14 @@ public class MainController
         }
     }
 
+    /**
+     * Loads an Element within the file being loaded to the model. Recursive for
+     * inner elements. Uses the loadConnection function to load the connections
+     * within the element.
+     *
+     * @param fileScanner ileScanner with the file being loaded.
+     * @return Element that is getting loaded.
+     */
     private Element loadElement(Scanner fileScanner)
     {
         String identifier = null;
@@ -246,6 +380,7 @@ public class MainController
         ArrayList<String> attributes = new ArrayList<String>();
         ArrayList<String> operations = new ArrayList<String>();
         ArrayList<String> responsibilities = new ArrayList<String>();
+        ArrayList<String> linkedModels = new ArrayList<String>();
         ArrayList<Connection> connections = new ArrayList<Connection>();
         ArrayList<Element> innerElements = new ArrayList<Element>();
         int startLevel = 0;
@@ -305,6 +440,18 @@ public class MainController
                         }
                     }
                 }
+                else if (line.startsWith("\"linked models\": [") == true)
+                {
+                    while (line.equals("],") == false)
+                    {
+                        line = fileScanner.nextLine().trim();
+                        if (line.equals("],") == false && line.length() > 3)
+                        {
+                            linkedModels.add(line.substring(1, (line.length() - 2)));
+                        }
+                    }
+                }
+
                 else if (line.startsWith("\"connections\": [") == true)
                 {
                     while (line.equals("],") == false)
@@ -345,13 +492,20 @@ public class MainController
                     notes = notes.substring(1, (notes.length() - 2));
                 }
                 line = fileScanner.nextLine().trim();
+                System.out.println("Line end element: " + line);
             }
         }
 
-        Element tempElement = new Element(identifier, type, description, attributes, operations, responsibilities, connections, innerElements, startLevel, endLevel, terminantionLevel, notes);
+        Element tempElement = new Element(identifier, type, description, attributes, operations, responsibilities, connections, innerElements, startLevel, endLevel, terminantionLevel, notes, linkedModels);
         return tempElement;
     }
 
+    /**
+     * Loads a connection within the file being loaded to the model.
+     *
+     * @param fileScanner fileScanner with the file being loaded.
+     * @return Connection to be loaded.
+     */
     private Connection loadConnection(Scanner fileScanner)
     {
         String cIdentifier = null;
@@ -363,6 +517,7 @@ public class MainController
         String cDescriptionEnd = null;
         String cMultiplicityEnd = null;
         String cEndElement = null;
+        ArrayList<String> linkedModels = new ArrayList<String>();
         int cLevel = 0;
         String cNotes = null;
         String line = " ";
@@ -374,77 +529,101 @@ public class MainController
                 cIdentifier = line.substring(13, line.length()).trim();
                 cIdentifier = cIdentifier.substring(1, (cIdentifier.length() - 2));
             }
-            if (line.startsWith("\"type\":") == true)
+            else if (line.startsWith("\"type\":") == true)
             {
                 cType = line.substring(7, line.length()).trim();
                 cType = cType.substring(1, (cType.length() - 2));
             }
-            if (line.startsWith("\"top center\":") == true)
+            else if (line.startsWith("\"top center\":") == true)
             {
                 cTopCenter = line.substring(13, line.length()).trim();
                 cTopCenter = cTopCenter.substring(1, (cTopCenter.length() - 2));
             }
-            if (line.startsWith("\"bottom center\":") == true)
+            else if (line.startsWith("\"bottom center\":") == true)
             {
                 cBottomCenter = line.substring(16, line.length()).trim();
                 cBottomCenter = cBottomCenter.substring(1, (cBottomCenter.length() - 2));
             }
-            if (line.startsWith("\"description start\":") == true)
+            else if (line.startsWith("\"description start\":") == true)
             {
                 cDescriptionStart = line.substring(20, line.length()).trim();
                 cDescriptionStart = cDescriptionStart.substring(1, (cDescriptionStart.length() - 2));
             }
-            if (line.startsWith("\"multiplicity start\":") == true)
+            else if (line.startsWith("\"multiplicity start\":") == true)
             {
                 cMultiplicityStart = line.substring(21, line.length()).trim();
                 cMultiplicityStart = cMultiplicityStart.substring(1, (cMultiplicityStart.length() - 2));
             }
-            if (line.startsWith("\"description end\":") == true)
+            else if (line.startsWith("\"description end\":") == true)
             {
                 cDescriptionEnd = line.substring(18, line.length()).trim();
                 cDescriptionEnd = cDescriptionEnd.substring(1, (cDescriptionEnd.length() - 2));
             }
-            if (line.startsWith("\"multiplicity end\":") == true)
+            else if (line.startsWith("\"multiplicity end\":") == true)
             {
                 cMultiplicityEnd = line.substring(19, line.length()).trim();
                 cMultiplicityEnd = cMultiplicityEnd.substring(1, (cMultiplicityEnd.length() - 2));
             }
-            if (line.startsWith("\"end element\":") == true)
+            else if (line.startsWith("\"end element\":") == true)
             {
                 cEndElement = line.substring(14, line.length()).trim();
                 cEndElement = cEndElement.substring(1, (cEndElement.length() - 2));
             }
-            if (line.startsWith("\"level\":") == true)
+            else if (line.startsWith("\"level\":") == true)
             {
                 String temp = line.substring(8, line.length()).trim();
                 temp = temp.substring(0, (temp.length() - 1));
                 cLevel = Integer.parseInt(temp);
             }
-            if (line.startsWith("\"notes\":") == true)
+            else if (line.startsWith("\"notes\":") == true)
             {
                 cNotes = line.substring(8, line.length()).trim();
                 cNotes = cNotes.substring(1, (cNotes.length() - 2));
             }
+            else if (line.startsWith("\"linked models\": [") == true)
+            {
+                while (line.equals("],") == false)
+                {
+                    line = fileScanner.nextLine().trim();
+                    if (line.equals("],") == false && line.length() > 3)
+                    {
+                        linkedModels.add(line.substring(1, (line.length() - 2)));
+                    }
+                }
+            }
         }
 
-        Connection tempConnection = new Connection(cIdentifier, cType, cTopCenter, cBottomCenter, cDescriptionStart, cMultiplicityStart, cDescriptionEnd, cMultiplicityEnd, cEndElement, cLevel, cNotes);
+        Connection tempConnection = new Connection(cIdentifier, cType, cTopCenter, cBottomCenter, cDescriptionStart, cMultiplicityStart, cDescriptionEnd, cMultiplicityEnd, cEndElement, cLevel, cNotes, linkedModels);
         return tempConnection;
     }
 
-    protected void savingModel(Model activeModel, File selectedFile)
+    /**
+     * Saves the model to the selected file Uses saveElement function to save
+     * the elements within the model.
+     *
+     * @param selectedFile
+     */
+    protected void savingModel(File selectedFile)
     {
+        pathLoadedModel = selectedFile.getParent().replace("\\", "/");;
         Writer fileWriter = null;
         try
         {
             fileWriter = new BufferedWriter(new FileWriter(selectedFile));
             fileWriter.write("{\n");
             fileWriter.write("\"model type\": \"" + activeModel.getModelType() + "\",\n");
-            fileWriter.write("\"elements\":  [\n");
+            fileWriter.write("\"elements\": [\n");
             for (Element temporaryElement : activeModel.getElements())
             {
                 saveElement(temporaryElement, fileWriter);
             }
-            fileWriter.write("]\n");
+            fileWriter.write("],\n");
+            fileWriter.write("\"linked models\": [\n");
+            for (String path : activeModel.getLinkedModels())
+            {
+                fileWriter.write("\"" + path + "\",\n");
+            }
+            fileWriter.write("],\n");
             fileWriter.write("}");
         }
         catch (IOException ex)
@@ -465,6 +644,15 @@ public class MainController
 
     }
 
+    /**
+     * Saves the element via the given writer into the file Recursive for inner
+     * elements Uses the saveConnection() to save the connections within the
+     * element
+     *
+     * @param temporaryElement element to be saved
+     * @param tempWriter FileWriter with the file that the model is getting
+     * saved to
+     */
     private void saveElement(Element temporaryElement, Writer tempWriter)
     {
         try
@@ -507,6 +695,12 @@ public class MainController
             tempWriter.write("\"end level\":" + temporaryElement.getEndLevel() + ",\n");
             tempWriter.write("\"termination level\": " + temporaryElement.getterminationLevel() + ",\n");
             tempWriter.write("\"notes\": \"" + temporaryElement.getNotes() + "\",\n");
+            tempWriter.write("\"linked models\": [\n");
+            for (String path : temporaryElement.getLinkedModels())
+            {
+                tempWriter.write("\"" + path + "\",\n");
+            }
+            tempWriter.write("],\n");
             tempWriter.write("},\n");
 
         }
@@ -517,6 +711,13 @@ public class MainController
         }
     }
 
+    /**
+     * Saves the connection via the given writer into the file
+     *
+     * @param tempConnection connection to be saved
+     * @param tempWriter FileWriter with the file that the model is getting
+     * saved to
+     */
     private void saveConnection(Connection tempConnection, Writer tempWriter)
     {
         try
@@ -533,6 +734,12 @@ public class MainController
             tempWriter.write("\"end element\": \"" + tempConnection.getEndElementID() + "\",\n");
             tempWriter.write("\"level\":" + tempConnection.getLevel() + ",\n");
             tempWriter.write("\"notes\": \"" + tempConnection.getNotes() + "\",\n");
+            tempWriter.write("\"linked models\": [\n");
+            for (String path : tempConnection.getLinkedModels())
+            {
+                tempWriter.write("\"" + path + "\",\n");
+            }
+            tempWriter.write("],\n");
             tempWriter.write("},\n");
 
         }
@@ -543,6 +750,15 @@ public class MainController
         }
     }
 
+    /**
+     * Retrieves the connection or element ID based on the description (as shown
+     * in a box)
+     *
+     * @param boxID String containing the element or connection description from
+     * a box.
+     * @return String containing the ID of the connection or element ID based on
+     * the input.
+     */
     protected String getIDFromBox(String boxID)
     {
         int split = boxID.indexOf(" : ");
@@ -550,9 +766,15 @@ public class MainController
         return boxID;
     }
 
+    /**
+     * Removes based on the given element ID an element and any existing
+     * connections to an from that element from the model.
+     *
+     * @param elementIDToBeRemoved String of the element to be removed
+     */
     protected void removeElement(String elementIDToBeRemoved)
     {
-        for(Element temp : allElements)
+        for (Element temp : allElements)
         {
             if (temp.getConnections().size() > 0)
             {
@@ -575,7 +797,7 @@ public class MainController
         if (activeModel.getElements().contains(elementToBeRemoved))
         {
             activeModel.getElements().remove(elementToBeRemoved);
-            if(activeModel.getElements().size() == 0)
+            if (activeModel.getElements().size() == 0)
             {
                 activeModel.setElementPresent(false);
             }
@@ -587,6 +809,11 @@ public class MainController
         loadAllInstances();
     }
 
+    /**
+     * Removes an inneerElement from an element based on the given element ID.
+     *
+     * @param innerElementIDToBeRemoved ID of inner element to be removed
+     */
     private void removeInnerElement(String innerElementIDToBeRemoved)
     {
         Element innerElementToBeRemoved = findElement(innerElementIDToBeRemoved);
@@ -594,6 +821,11 @@ public class MainController
         parentElement.getInnerElements().remove(innerElementToBeRemoved);
     }
 
+    /**
+     * Finds and sets the parent element of the given child element.
+     *
+     * @param childElementBeFound
+     */
     private void findParentElement(Element childElementBeFound)
     {
         parentElement = null;
@@ -613,6 +845,14 @@ public class MainController
         }
     }
 
+    /**
+     * Searches an ArrayList of Element for the given element within their inner
+     * elements
+     *
+     * @param parentElements ArryList of elements of which the inner elements
+     * will be searched
+     * @param childElementBeFound element to be found.
+     */
     private void searchInnerElement(ArrayList<Element> parentElements, Element childElementBeFound)
     {
         for (Element temp : parentElements)
@@ -631,13 +871,205 @@ public class MainController
         }
     }
 
+    /**
+     * Adds and element to the model.
+     *
+     * @param selectedElement element to be added
+     */
     protected void addElement(Element selectedElement)
     {
         activeModel.getElements().add(selectedElement);
-        if(activeModel.getElementPresent() == false)
+        if (activeModel.getElementPresent() == false)
         {
             activeModel.setElementPresent(true);
         }
         loadAllInstances();
+    }
+
+    /**
+     * Returns the .json filename extension filter.
+     *
+     * @return filter
+     */
+    protected FileNameExtensionFilter getJSONfilter()
+    {
+        return filter;
+    }
+
+    /**
+     * Returns the relative path between the linked file and the file containing
+     * the active model.
+     *
+     * @param linkedFile file that needs to be linked.
+     * @return null in case the model hasn't been saved yet otherwise returns a
+     * String containing the relative path between the linked file and the
+     * active models file.
+     */
+    protected String getRelativePath(File linkedFile)
+    {
+        if (pathLoadedModel != null)
+        {
+            String relativePath = "./";
+            String linkedFilePath = linkedFile.getParent().replace("\\", "/");
+            if (linkedFile.getParent().equals(pathLoadedModel))
+            {
+                return relativePath;
+            }
+            else
+            {
+
+                String[] linkedFileSplit = linkedFilePath.split("/");
+                String[] loadedFileSplit = pathLoadedModel.split("/");
+                int i = 0;
+                boolean diverge = false;
+                while (i < loadedFileSplit.length && i < linkedFileSplit.length)
+                {
+                    if (loadedFileSplit[i].equals(linkedFileSplit[i]) == false)
+                    {
+                        diverge = true;
+                    }
+                    if (diverge == true)
+                    {
+                        relativePath = "../" + relativePath + linkedFileSplit[i] + "/";
+                    }
+                    i++;
+                }
+                int x = i;
+                while (x < loadedFileSplit.length)
+                {
+                    relativePath = "../" + relativePath;
+                    x++;
+                }
+                while (i < linkedFileSplit.length)
+                {
+                    relativePath = relativePath + linkedFileSplit[i] + "/";
+                    i++;
+                }
+            }
+            String path = relativePath + linkedFile.getName();
+            return path;
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "You need to save the model to a file before you can add linked models.");
+
+            return null;
+        }
+    }
+
+    /**
+     * Adds a linked model to the active model.
+     *
+     * @param path String with the relative path to the file that will be linked
+     * to the model.
+     */
+    protected void addLinkedModel(String path)
+    {
+        activeModel.getLinkedModels().add(path);
+    }
+
+    /**
+     * Loads the linked file
+     *
+     * @param relativePathLinkedModel relative path of the file that needs to be
+     * linked.
+     */
+    protected void loadLinkedModel(String relativePathLinkedModel)
+    {
+        File linkedModel = new File(pathLoadedModel + "/" + relativePathLinkedModel);
+        if (linkedModel.exists())
+        {
+            try
+            {
+                Scanner fileScanner = new Scanner(new BufferedReader(new FileReader(linkedModel)));
+                System.out.println("test: " + linkedModel.getParent());
+                loadEModel(fileScanner, linkedModel.getParent());
+            }
+            catch (FileNotFoundException ex)
+            {
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
+     * Save the model to the selected file.
+     */
+    protected void saveChanges()
+    {
+        File jsonFile = null;
+        String path = null;
+        JFileChooser saveFileChooser = new JFileChooser();
+        saveFileChooser.setFileFilter(filter);
+        saveFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        //opens the file selection pane and sets the file path
+        int returnValue = saveFileChooser.showSaveDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION)
+        {
+            if (saveFileChooser.getSelectedFile().getPath() == null)
+            {
+
+            }
+            else if (saveFileChooser.getSelectedFile().getPath().toLowerCase().endsWith(".json"))
+            {
+                path = saveFileChooser.getSelectedFile().getPath();
+            }
+            else
+            {
+                path = saveFileChooser.getSelectedFile().getPath() + ".json";
+            }
+            jsonFile = new File(path);
+            if (jsonFile.exists() == true)
+            {
+                savingModel(jsonFile);
+            }
+            else
+            {
+                savingModel(jsonFile);
+            }
+        }
+    }
+
+    /**
+     * Closes the connection frame.
+     */
+    protected void closeConnection()
+    {
+        connectionFrame.dispatchEvent(new WindowEvent(connectionFrame, WindowEvent.WINDOW_CLOSING));
+    }
+
+    /**
+     * Opens a connectionGUI for an existing connection
+     *
+     * @param connectionID String matching the ID of the connection that needs to be opened.
+     */
+    protected void editConnection(String connectionID)
+    {
+        Connection connection = findConnection(connectionID);
+        if (connection != null)
+        {
+            connectionFrame = new JFrame();
+            ConnectionGUI connectionGUI = new ConnectionGUI(connection, this);
+            connectionFrame.add(connectionGUI);
+            connectionFrame.pack();
+            connectionFrame.setVisible(true);
+        }
+    }
+
+    /**
+     * Opens a connectionGUI for an new connection
+     * 
+     * @param selectedElement element the connection originates from.
+     */
+    protected void createNewConnection(Element selectedElement)
+    {
+        if (connectionFrame == null || connectionFrame.isVisible() == false)
+        {
+            connectionFrame = new JFrame();
+            ConnectionGUI connectionGUI = new ConnectionGUI(selectedElement, this);
+            connectionFrame.add(connectionGUI);
+            connectionFrame.pack();
+            connectionFrame.setVisible(true);
+        }
     }
 }

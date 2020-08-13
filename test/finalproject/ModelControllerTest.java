@@ -78,6 +78,7 @@ public class ModelControllerTest
         ModelController instance = new ModelController();
         TreeSet<String> expResult = new TreeSet<>();
         expResult.add("Action Node");
+        expResult.add("Object");
         expResult.add("Object Node");
         expResult.add("Split and Merge Node");
         expResult.add("Fork and Join Node");
@@ -85,7 +86,6 @@ public class ModelControllerTest
         expResult.add("Activity Final Node");
         expResult.add("Flow Final Node");
         expResult.add("Partition");        
-        expResult.add("Class with Inner class(es)");
         TreeSet<String> result = instance.getElements(diagramType);
         assertEquals(expResult, result);
     }
@@ -98,10 +98,21 @@ public class ModelControllerTest
     {
         System.out.println("getDiagrams");
         ModelController instance = new ModelController();
-        Object[] expResult = new Object[3];
+        Object[] expResult = new Object[14];
         expResult[0] = "Activity Diagram";
         expResult[1] = "Class Diagram";
-        expResult[2] = "Use Case Diagram";
+        expResult[2] = "Communication Diagram";
+        expResult[3] = "Component Diagram";
+        expResult[4] = "Composite Structure Diagram";
+        expResult[5] = "Deployment Diagram";
+        expResult[6] = "Interaction Diagram";
+        expResult[7] = "Object Diagram";
+        expResult[8] = "Package Diagram";
+        expResult[9] = "Profile Diagram";
+        expResult[10] = "Sequence Diagram";
+        expResult[11] = "State Machine Diagram";
+        expResult[12] = "Timing Diagram";
+        expResult[13] = "Use Case Diagram";
         Object[] result = instance.getDiagrams();
         assertArrayEquals(expResult, result);
     }

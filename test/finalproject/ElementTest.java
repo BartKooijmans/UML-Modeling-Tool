@@ -48,10 +48,12 @@ public class ElementTest
         eOperations1.add("test op2");
         ArrayList<String> eResponsibilities1 = new ArrayList<String>();
         ArrayList<Connection> eConnections1 = new ArrayList<Connection>();
-        c1 = new Connection("c1", "null", "null", "null", "null", "null", "null", "null", "e0", 0, "test notes c1");
+        ArrayList<String> cLinkedModels1 = new ArrayList<String>(); 
+        c1 = new Connection("c1", "null", "null", "null", "null", "null", "null", "null", "e0", 0, "test notes c1", cLinkedModels1);
         eConnections1.add(c1);
         ArrayList<Element> eInnerElements1 = new ArrayList<Element>();
-        e0 = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null"); 
+        ArrayList<String> eLinkedModels1 = new ArrayList<String>(); 
+        e0 = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null", eLinkedModels1); 
         
         ArrayList<String> eAttributesInner1 = new ArrayList<String>();
         eAttributesInner1.add("Inner attribute 1");
@@ -62,13 +64,16 @@ public class ElementTest
         ArrayList<String> eResponsibilitiesInner1 = new ArrayList<String>();
         eResponsibilitiesInner1.add("Inner response 1");
         ArrayList<Connection> eConnectionsInner1 = new ArrayList<Connection>();
-        Connection c2 = new Connection("c2", "null", "null", "null", "null", "null", "null", "null", "e0", 0, "test notes c1");
+        ArrayList<String> cLinkedModels2 = new ArrayList<String>();        
+        Connection c2 = new Connection("c2", "null", "null", "null", "null", "null", "null", "null", "e0", 0, "test notes c1", cLinkedModels2);
         eConnectionsInner1.add(c2);
         ArrayList<Element> eInnerElements2 = new ArrayList<Element>();
-        eInner1 = new Element("e1", "null", "Element description 0", eAttributesInner1, eOperationsInner1, eResponsibilitiesInner1, eConnectionsInner1, eInnerElements2, 0, 0, 0, "null"); 
+        ArrayList<String> eLinkedModels2 = new ArrayList<String>(); 
+        eInner1 = new Element("e1", "null", "Element description 0", eAttributesInner1, eOperationsInner1, eResponsibilitiesInner1, eConnectionsInner1, eInnerElements2, 0, 0, 0, "null", eLinkedModels2); 
         
         eInnerElements1.add(eInner1);
-        e0 = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null"); 
+        ArrayList<String> eLinkedModels3 = new ArrayList<String>(); 
+        e0 = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null", eLinkedModels3); 
     }
     
     @After
@@ -172,9 +177,9 @@ public class ElementTest
     public void testAddConnection()
     {
         System.out.println("addConnection");
-        Connection activeConnection = null;
         Element instance = e0;
-        Connection c3 = new Connection("c3", "null", "null", "null", "null", "null", "null", "null", "e0", 0, "test notes c3");
+        ArrayList<String> cLinkedModels = new ArrayList<String>(); 
+        Connection c3 = new Connection("c3", "null", "null", "null", "null", "null", "null", "null", "e0", 0, "test notes c3", cLinkedModels);
         instance.addConnection(c3);
         ArrayList<Connection> result = instance.getConnections();
         ArrayList<Connection> expResult = new ArrayList<>();

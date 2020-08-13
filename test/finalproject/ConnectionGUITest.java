@@ -47,7 +47,7 @@ public class ConnectionGUITest
         mainTestController = new MainController();
         File jsonTestLoadFile = new File("C:/Users/Botje/Documents/test.json");
         Scanner fileScanner = new Scanner(new BufferedReader(new FileReader(jsonTestLoadFile)));
-        mainTestController.loadEModel(fileScanner);
+        mainTestController.loadEModel(fileScanner,"C:/Users/Botje/Documents/");
     }
     
     @After
@@ -61,20 +61,7 @@ public class ConnectionGUITest
     @Test
     public void testCreationGUINewConnection()
     {
-        System.out.println("newConnection");
-        ArrayList<String> eAttributes1 = new ArrayList<String>();
-        eAttributes1.add("attribute 1");
-        eAttributes1.add("attribute 2");
-        ArrayList<String> eOperations1 = new ArrayList<String>();
-        eOperations1.add("test op1");
-        eOperations1.add("test op2");
-        ArrayList<String> eResponsibilities1 = new ArrayList<String>();
-        ArrayList<Connection> eConnections1 = new ArrayList<Connection>();
-        Connection c1 = new Connection("c1", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c1");
-        eConnections1.add(c1);
-        ArrayList<Element> eInnerElements1 = new ArrayList<Element>();
-        element1 = new Element("e0", "null", "Element description 0", eAttributes1, eOperations1, eResponsibilities1, eConnections1, eInnerElements1, 0, 0, 0, "null");
-        cGUINewConnection = new ConnectionGUI(element1, mainTestController);        
+        cGUINewConnection = new ConnectionGUI(mainTestController.getModel().getElements().get(0), mainTestController);        
         assertNotNull(cGUINewConnection);              
     }
     
@@ -85,7 +72,9 @@ public class ConnectionGUITest
     public void testCreationGUIExistingConnection()
     {
         System.out.println("existingConnection");
-        Connection c3 = new Connection("c3", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c3");
+        ArrayList<String> linkedModels = new ArrayList<String>();
+        linkedModels.add("./test2.json");
+        Connection c3 = new Connection("c3", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c3", linkedModels);
         cGUIExistingConnection = new ConnectionGUI(c3, mainTestController);
         assertNotNull(cGUIExistingConnection); 
     }
