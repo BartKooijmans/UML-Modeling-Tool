@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Connection component management GUI
  */
 package finalproject;
 
@@ -23,7 +21,10 @@ public class ConnectionGUI extends javax.swing.JPanel
     private JFileChooser linkFileChooser = new JFileChooser();
 
     /**
-     * Creates new form ConnectionGUI
+     * Creates new form ConnectionGUI for a new connection
+     * 
+     * @param startElement Element the connection originates for
+     * @param modelGuiController Controller for functionality
      */
     public ConnectionGUI(Element startElement, MainController modelGuiController)
     {
@@ -37,6 +38,12 @@ public class ConnectionGUI extends javax.swing.JPanel
         fieldIdentifier.setText(ID);
     }
 
+    /**
+     * Creates new form ConnectionGUI for an existing connection
+     *
+     * @param lConnection connection to be edited
+     * @param modelGuiController Controller for functionality
+     */
     public ConnectionGUI(Connection lConnection, MainController modelGuiController)
     {
         guiController = modelGuiController;
@@ -84,6 +91,9 @@ public class ConnectionGUI extends javax.swing.JPanel
         }
     }
 
+    /**
+     * Sets up the field and adds values to the dropdown boxes
+     */
     private void createFields()
     {
         initComponents();
@@ -98,6 +108,9 @@ public class ConnectionGUI extends javax.swing.JPanel
         linkFileChooser.setFileFilter(guiController.getJSONfilter());
     }
 
+    /**
+     * Updates the dropdown box showing models linked to the connection
+     */
     protected void updateBoxModelToConnection()
     {
         boxLinkedModelC.removeAllItems();
@@ -154,7 +167,8 @@ public class ConnectionGUI extends javax.swing.JPanel
 
         jLabel12.setText("Notes: ");
 
-        saveButton.setText("Save Connection");
+        saveButton.setText("Save changes to Connection");
+        saveButton.setActionCommand("Save Changes");
         saveButton.setAlignmentX(0.5F);
         saveButton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -249,8 +263,8 @@ public class ConnectionGUI extends javax.swing.JPanel
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(fieldIdentifier, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(saveButton))
+                                .addGap(18, 18, 18)
+                                .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -279,9 +293,7 @@ public class ConnectionGUI extends javax.swing.JPanel
                                     .addComponent(boxLinkedModelC, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(loadLinkedModelC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(unlinkModelFromC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(linkModelToC, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))))))
+                                    .addComponent(linkModelToC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -350,6 +362,11 @@ public class ConnectionGUI extends javax.swing.JPanel
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Saves changes to the connection, uses the saveConnection method and calls the load Instances method of the controller to update the component lists used
+     * 
+     * @param evt button pressed event
+     */
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
     {//GEN-HEADEREND:event_saveButtonActionPerformed
         Object[] options =
@@ -362,20 +379,31 @@ public class ConnectionGUI extends javax.swing.JPanel
         {
             saveConnection();
             guiController.loadAllInstances();
+            guiController.closeConnection();
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    /**
+     * loads a linked model uses uses the saveConnection method and calls the controller saveChanges methods to save the existing method, loads the linked model and closes the connection management window
+     * 
+     * @param evt button pressed event
+     */
     private void loadLinkedModelCActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadLinkedModelCActionPerformed
     {//GEN-HEADEREND:event_loadLinkedModelCActionPerformed
         if (boxLinkedModelC.getSelectedItem() != null)
         {
             saveConnection();
-            guiController.saveChanges();
+            guiController.saveChangesOpenModel();
             guiController.loadLinkedModel(boxLinkedModelC.getSelectedItem().toString());
             guiController.closeConnection();
         }
     }//GEN-LAST:event_loadLinkedModelCActionPerformed
 
+    /**
+     * Remove a linked model from the list of connected models to the connection.
+     * 
+     * @param evt button pressed event
+     */
     private void unlinkModelFromCActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_unlinkModelFromCActionPerformed
     {//GEN-HEADEREND:event_unlinkModelFromCActionPerformed
         String link = boxLinkedModelC.getSelectedItem().toString();
@@ -389,6 +417,11 @@ public class ConnectionGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_unlinkModelFromCActionPerformed
 
+    /**
+     * Links a selected model file to the Connection
+     * 
+     * @param evt button pressed event
+     */
     private void linkModelToCActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_linkModelToCActionPerformed
     {//GEN-HEADEREND:event_linkModelToCActionPerformed
 
@@ -408,21 +441,23 @@ public class ConnectionGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_linkModelToCActionPerformed
 
+    /**
+     * Saves the connection by calling the SaveCConnection method.
+     * Checks if it is a new connection or existing by checking if the starting element was added as well (happens in the case of a new element with the creation of the UI) and adds it to the element if it is a new connection.
+     */
     private void saveConnection()
     {
+        saveCConnection();
         if (startingElement != null)
         {
-
-            saveCConnection();
             startingElement.addConnection(activeConnection);
         }
-        else
-        {
-            saveCConnection();
-        }
-        System.out.println(activeConnection.getType() + " : " + activeConnection.getTopCenter());
+
     }
 
+    /**
+     * Sets the values of the fields to the activeConnection.     * 
+     */
     private void saveCConnection()
     {
         activeConnection.setID(fieldIdentifier.getText());
@@ -494,5 +529,4 @@ public class ConnectionGUI extends javax.swing.JPanel
     private javax.swing.JEditorPane stringArrayEditor;
     private javax.swing.JButton unlinkModelFromC;
     // End of variables declaration//GEN-END:variables
-
 }

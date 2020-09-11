@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Test class for the main controller class.
  */
 package finalproject;
 
@@ -310,18 +308,15 @@ public class MainControllerTest
     @Test
     public void testSavingModel() throws FileNotFoundException
     {
-        System.out.println("savingModel");
-        ArrayList<String> linkedModels = new ArrayList<String>();
-        linkedModels.add("./test2.json");
-        Model activeModel = new Model("Class Diagram", true, elementList, linkedModels);
+        System.out.println("savingModel");   
         File selectedFile = new File("C:/Users/Botje/Documents/testSaving.json");
         MainController instance = new MainController();
-        instance.loadEModel(fileScanner, path);
+        instance.loadEModel(fileScanner, "C:/Users/Botje/Documents");
         instance.savingModel(selectedFile);
         Scanner savedFileScanner = new Scanner(new BufferedReader(new FileReader(selectedFile)));
         MainController instance2 = new MainController();
         instance2.loadEModel(savedFileScanner, "C:/Users/Botje/Documents/");
-        assertEquals("Class Diagram", instance2.getModel().getModelType());
+        assertEquals("Activity Diagram", instance2.getModel().getModelType());
         assertTrue(instance2.getModel().getElementPresent());
         for (Element test : elementList)
         {

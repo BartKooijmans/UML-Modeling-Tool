@@ -30,7 +30,7 @@
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="loadLinkedModelM" alignment="0" max="32767" attributes="0"/>
                           <Component id="delinkModelFromM" alignment="0" max="32767" attributes="0"/>
-                          <Component id="removeElement" alignment="0" pref="186" max="32767" attributes="0"/>
+                          <Component id="removeElement" alignment="0" pref="182" max="32767" attributes="0"/>
                           <Component id="newElementButton" alignment="0" max="32767" attributes="0"/>
                           <Component id="boxModelToModel" alignment="0" max="32767" attributes="0"/>
                           <Component id="linkModelToM" alignment="0" max="32767" attributes="0"/>
@@ -87,7 +87,7 @@
                               <Component id="editResponsibiltiesButton" min="-2" pref="120" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="247" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="242" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -132,12 +132,18 @@
                       <Component id="labelTextfield" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="saveButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                              <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                              <Component id="linkModelToE" min="-2" pref="133" max="-2" attributes="0"/>
-                          </Group>
                           <Component id="jScrollPane2" alignment="1" pref="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="saveButton" alignment="1" min="-2" pref="192" max="-2" attributes="0"/>
+                                  <Component id="linkModelToE" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -166,9 +172,9 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="saveButton" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="fieldIdentifier" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -181,8 +187,7 @@
                       <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="saveButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                       <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="linkModelToE" min="-2" max="-2" attributes="0"/>
@@ -236,16 +241,16 @@
                   <Component id="newInnerElementButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="removeInnerElementButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" pref="42" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" pref="49" max="32767" attributes="0"/>
               <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                  <Component id="editNotesButton" alignment="0" min="-2" pref="23" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="editAttributesButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="editOperationsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="editResponsibiltiesButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="editNotesButton" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -298,7 +303,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Inner classes:"/>
+        <Property name="text" type="java.lang.String" value="Inner elements:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="fieldStartLevel">
@@ -490,7 +495,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="saveButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save Changes"/>
+        <Property name="text" type="java.lang.String" value="Save changes to element"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>
@@ -529,7 +534,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="linkModelToM">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add linked model"/>
+        <Property name="text" type="java.lang.String" value="Add linked model to model"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="linkModelToMActionPerformed"/>
@@ -573,7 +578,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="linkModelToE">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add linked model"/>
+        <Property name="text" type="java.lang.String" value="Add linked model to element"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="linkModelToEActionPerformed"/>

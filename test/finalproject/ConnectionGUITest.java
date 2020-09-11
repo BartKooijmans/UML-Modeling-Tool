@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Test class for ConnectionGUI class
  */
 package finalproject;
 
@@ -77,6 +75,5 @@ public class ConnectionGUITest
         Connection c3 = new Connection("c3", "null", "null", "null", "null", "null", "null", "null", "element 1", 0, "test notes c3", linkedModels);
         cGUIExistingConnection = new ConnectionGUI(c3, mainTestController);
         assertNotNull(cGUIExistingConnection); 
-    }
-    
+    }    
 }

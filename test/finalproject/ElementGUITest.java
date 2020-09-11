@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Test class for ElemenGUI class.
  */
 package finalproject;
 
@@ -73,6 +71,5 @@ public class ElementGUITest
         mainTestController.loadEModel(fileScanner,"C:/Users/Botje/Documents/");
         ElementGUI instance = new ElementGUI(mainTestController);
         assertNotNull(instance);
-    }
-    
+    }    
 }

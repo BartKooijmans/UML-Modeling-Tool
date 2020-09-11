@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Test class for the model class.
  */
 package finalproject;
 
@@ -84,6 +82,5 @@ public class ModelTest
         ArrayList<Element> expResult = elementList;
         ArrayList<Element> result = instance.getElements();
         assertEquals(expResult, result);
-    }
-    
+    }    
 }

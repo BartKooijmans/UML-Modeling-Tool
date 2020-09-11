@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Test class for the model controller class.
  */
 package finalproject;
 
@@ -115,6 +113,5 @@ public class ModelControllerTest
         expResult[13] = "Use Case Diagram";
         Object[] result = instance.getDiagrams();
         assertArrayEquals(expResult, result);
-    }
-    
+    }    
 }

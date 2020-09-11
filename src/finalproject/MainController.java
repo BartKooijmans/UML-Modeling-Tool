@@ -492,7 +492,6 @@ public class MainController
                     notes = notes.substring(1, (notes.length() - 2));
                 }
                 line = fileScanner.nextLine().trim();
-                System.out.println("Line end element: " + line);
             }
         }
 
@@ -947,6 +946,15 @@ public class MainController
                 }
             }
             String path = relativePath + linkedFile.getName();
+            if (path.contains(":"))
+            {
+                int indexdrive = path.indexOf(":");
+                while (path.charAt(indexdrive) != '/')
+                {
+                    indexdrive--;
+                }
+                path = path.substring(indexdrive + 1);
+            }
             return path;
         }
         else
@@ -976,14 +984,34 @@ public class MainController
      */
     protected void loadLinkedModel(String relativePathLinkedModel)
     {
-        File linkedModel = new File(pathLoadedModel + "/" + relativePathLinkedModel);
+        String path;
+        if (relativePathLinkedModel.contains(":"))
+        {
+            path = relativePathLinkedModel;
+        }
+        else
+        {
+            path = pathLoadedModel + "/" + relativePathLinkedModel;
+        }
+        File linkedModel = new File(path);
         if (linkedModel.exists())
         {
             try
             {
+
                 Scanner fileScanner = new Scanner(new BufferedReader(new FileReader(linkedModel)));
-                System.out.println("test: " + linkedModel.getParent());
                 loadEModel(fileScanner, linkedModel.getParent());
+                try
+                {
+                    pathLoadedModel = linkedModel.getCanonicalPath();
+                    pathLoadedModel = pathLoadedModel.replace(linkedModel.getName(), "");
+                    pathLoadedModel = pathLoadedModel.replace("\\", "/");
+                }
+                catch (IOException ex)
+                {
+                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                JOptionPane.showMessageDialog(uiPanel, "Model loaded succesfully");
             }
             catch (FileNotFoundException ex)
             {
@@ -1041,7 +1069,8 @@ public class MainController
     /**
      * Opens a connectionGUI for an existing connection
      *
-     * @param connectionID String matching the ID of the connection that needs to be opened.
+     * @param connectionID String matching the ID of the connection that needs
+     * to be opened.
      */
     protected void editConnection(String connectionID)
     {
@@ -1058,7 +1087,7 @@ public class MainController
 
     /**
      * Opens a connectionGUI for an new connection
-     * 
+     *
      * @param selectedElement element the connection originates from.
      */
     protected void createNewConnection(Element selectedElement)
@@ -1070,6 +1099,23 @@ public class MainController
             connectionFrame.add(connectionGUI);
             connectionFrame.pack();
             connectionFrame.setVisible(true);
+        }
+    }
+
+    /**
+     * Check if the user wants to save the model or not, if they confirm it calls the saveChanges method.
+     */
+    protected void saveChangesOpenModel()
+    {
+        Object[] options =
+        {
+            "Yes, save",
+            "No, don't save"
+        };
+        int n = JOptionPane.showOptionDialog(null, "Do you want to save the current model first", "Save model?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+        if (n == 0)
+        {
+            saveChanges();
         }
     }
 }

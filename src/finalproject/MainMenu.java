@@ -35,8 +35,8 @@ public class MainMenu
     private MainController mainController;
     //4 main menu items
     private JMenuItem start = new JMenuItem("new Model");
-    private JMenuItem save = new JMenuItem("Save Model");
-    private JMenuItem load = new JMenuItem("Load Model");
+    private JMenuItem save = new JMenuItem("Save Model to file");
+    private JMenuItem load = new JMenuItem("Load Model from file");
     private JMenuItem close = new JMenuItem("Exit");
     private JFrame mainFrame; // The main frame containg the different game elements.
     private JFileChooser saveFileChooser;
@@ -271,39 +271,11 @@ public class MainMenu
     }
 
     /**
-     * Opens the file selector for the save file, adds the .json file extension at the end if it was missing and passes the file on to the main controller via the savingModel() function who will save the active model in the file
+     * Calls the saveChanges() method of the mainController file to save the model to a file 
      */
     private void saveModel()
     {
-        File jsonFile = null;
-        String path = null;
-        saveFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        //opens the file selection pane and sets the file path
-        int returnValue = saveFileChooser.showSaveDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION)
-        {
-            if (saveFileChooser.getSelectedFile().getPath() == null)
-            {
-
-            }
-            else if (saveFileChooser.getSelectedFile().getPath().toLowerCase().endsWith(".json"))
-            {
-                path = saveFileChooser.getSelectedFile().getPath();
-            }
-            else
-            {
-                path = saveFileChooser.getSelectedFile().getPath() + ".json";
-            }
-            jsonFile = new File(path);
-            if (jsonFile.exists() == true)
-            {
-                mainController.savingModel(jsonFile);
-            }
-            else
-            {
-                mainController.savingModel(jsonFile);
-            }
-        }
+        mainController.saveChanges();
     }
 
     /**

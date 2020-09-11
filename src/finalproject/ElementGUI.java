@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * ElementGUI class Interface class for managing the model and element components
  */
 package finalproject;
 
@@ -11,7 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * 
  * @author Bart Kooijmans
  */
 public class ElementGUI extends javax.swing.JPanel
@@ -26,6 +24,11 @@ public class ElementGUI extends javax.swing.JPanel
     private int activeEditorField;
     private JFileChooser linkFileChooser;
 
+    /**
+     * Constructor for the ElementGUI 
+     * 
+     * @param suppliedGuiController 
+     */    
     public ElementGUI(MainController suppliedGuiController)
     {
         guiController = suppliedGuiController;
@@ -37,6 +40,9 @@ public class ElementGUI extends javax.swing.JPanel
         updateBoxes();
     }
 
+    /**
+     * updates the list of elements and sets it to the selected element
+     */
     private void updateList()
     {
         guiController.loadAllInstances();
@@ -131,7 +137,7 @@ public class ElementGUI extends javax.swing.JPanel
 
         jLabel7.setText("Connections: ");
 
-        jLabel8.setText("Inner classes:");
+        jLabel8.setText("Inner elements:");
 
         fieldStartLevel.setAlignmentX(0.0F);
 
@@ -287,7 +293,7 @@ public class ElementGUI extends javax.swing.JPanel
 
         boxType.setAlignmentX(0.0F);
 
-        saveButton.setText("Save Changes");
+        saveButton.setText("Save changes to element");
         saveButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -322,7 +328,7 @@ public class ElementGUI extends javax.swing.JPanel
             }
         });
 
-        linkModelToM.setText("Add linked model");
+        linkModelToM.setText("Add linked model to model");
         linkModelToM.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -353,7 +359,7 @@ public class ElementGUI extends javax.swing.JPanel
 
         jLabel14.setText("Models linked to element:");
 
-        linkModelToE.setText("Add linked model");
+        linkModelToE.setText("Add linked model to element");
         linkModelToE.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -395,7 +401,7 @@ public class ElementGUI extends javax.swing.JPanel
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(loadLinkedModelM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(delinkModelFromM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(removeElement, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                            .addComponent(removeElement, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
                             .addComponent(newElementButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(boxModelToModel, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(linkModelToM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -440,7 +446,7 @@ public class ElementGUI extends javax.swing.JPanel
                                 .addComponent(editOperationsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(editResponsibiltiesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 247, Short.MAX_VALUE))
+                        .addGap(0, 242, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -474,11 +480,15 @@ public class ElementGUI extends javax.swing.JPanel
                         .addComponent(labelTextfield)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel14)
-                                .addComponent(linkModelToE, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel14)
+                                        .addGap(12, 12, 12))
+                                    .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(linkModelToE, javax.swing.GroupLayout.Alignment.TRAILING))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -501,9 +511,9 @@ public class ElementGUI extends javax.swing.JPanel
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(saveButton)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(fieldIdentifier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
@@ -513,8 +523,7 @@ public class ElementGUI extends javax.swing.JPanel
                             .addComponent(boxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(9, 9, 9))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(saveButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(4, 4, 4)
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(linkModelToE)
@@ -556,15 +565,15 @@ public class ElementGUI extends javax.swing.JPanel
                     .addComponent(innerElementBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(newInnerElementButton)
                     .addComponent(removeInnerElementButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 49, Short.MAX_VALUE)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(editNotesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(editAttributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(editOperationsButton)
-                        .addComponent(editResponsibiltiesButton))
-                    .addComponent(editNotesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(editResponsibiltiesButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -597,22 +606,13 @@ public class ElementGUI extends javax.swing.JPanel
     }//GEN-LAST:event_listElementsActionPerformed
 
     /**
-     * Creates a prompt if the user wants to save the changes the changes to the element, afterwards tell the main controller to update its lists. and update the element list based on the new list.
+     * Saves the changes to the element, afterwards tell the main controller to update its lists. and update the element list based on the new list.
      */
     private void saveChanges()
     {
-        Object[] options =
-        {
-            "Yes, save",
-            "No, don't save"
-        };
-        int n = JOptionPane.showOptionDialog(null, "Do you want to save the changes to your element?", "Save changes?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-        if (n == 0)
-        {
             saveElement();
             guiController.loadAllInstances();
             updateList();
-        }
     }
 
     /**
@@ -842,7 +842,7 @@ public class ElementGUI extends javax.swing.JPanel
         {
             enableButtons();
             editResponsibiltiesButton.setEnabled(false);
-            labelTextfield.setText("Responsibilities");
+            labelTextfield.setText("Responsibilities:");
             stringArrayEditor.setText(responsibilities);
             activeEditorField = 3;
         }
@@ -891,18 +891,17 @@ public class ElementGUI extends javax.swing.JPanel
     }//GEN-LAST:event_stringArrayEditorFocusLost
 
     /**
-     * Calls the saveChanges() methods to save changes, calls the updateList() method as well afterwards to make sure the element list is updated. 
+     * Calls the saveChanges() methods to save changes. 
      * 
      * @param evt button pressed event
      */
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
     {//GEN-HEADEREND:event_saveButtonActionPerformed
         saveChanges();
-        updateList();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     /**
-     * 
+     * Retrieves the connection ID from the selected connection in the combobox and then calls the main controller to open that connection.
      * 
      * @param evt button pressed event
      */
@@ -928,6 +927,11 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_editConnectionButtonActionPerformed
 
+    /**
+     * Gets the selected connection removed from the selected element
+     * 
+     * @param evt button pressed event
+     */
     private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_removeConnectionButtonActionPerformed
     {//GEN-HEADEREND:event_removeConnectionButtonActionPerformed
         if (selectedElement != null)
@@ -951,6 +955,11 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_removeConnectionButtonActionPerformed
 
+    /**
+     * Creates a new connection starting from the selected element using the createNewConnection() method from the main controller and given the selectedElement as a parameter
+     * 
+     * @param evt button pressed event
+     */
     private void newConnectionButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newConnectionButtonActionPerformed
     {//GEN-HEADEREND:event_newConnectionButtonActionPerformed
         if (selectedElement != null)
@@ -964,6 +973,11 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_newConnectionButtonActionPerformed
 
+    /**
+     * Creates a new element within the model and assigns it a unique ID
+     * 
+     * @param evt button pressed event
+     */
     private void newElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newElementButtonActionPerformed
     {//GEN-HEADEREND:event_newElementButtonActionPerformed
         String nextElementId = guiController.findNextAvailableElementID();
@@ -983,12 +997,22 @@ public class ElementGUI extends javax.swing.JPanel
         updateGUI();
     }//GEN-LAST:event_newElementButtonActionPerformed
 
+    /**
+     * Updates the connection drop down box with the current connections assigned to the selected element
+     * 
+     * @param evt selecting the drop down box
+     */
     private void connectionBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)//GEN-FIRST:event_connectionBoxPopupMenuWillBecomeVisible
     {//GEN-HEADEREND:event_connectionBoxPopupMenuWillBecomeVisible
         updateConnectionBox();
         this.revalidate();
     }//GEN-LAST:event_connectionBoxPopupMenuWillBecomeVisible
 
+    /**
+     * Confirms if they indeed want to removes the selected inner element and if so calls the removeElement() method of the main controller giving the ID of the selected element.
+     * 
+     * @param evt button pressed event
+     */
     private void removeInnerElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_removeInnerElementButtonActionPerformed
     {//GEN-HEADEREND:event_removeInnerElementButtonActionPerformed
         if (selectedElement != null)
@@ -1012,6 +1036,11 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_removeInnerElementButtonActionPerformed
 
+    /**
+     * Confirms if they indeed want to removes the selected element and if so calls the removeElement() method of the main controller giving the ID of the selected element.
+     * 
+     * @param evt button pressed event
+     */
     private void removeElementActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_removeElementActionPerformed
     {//GEN-HEADEREND:event_removeElementActionPerformed
         if (selectedElement != null)
@@ -1035,6 +1064,11 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_removeElementActionPerformed
 
+    /**
+     * Saves the current selected element and then creates a new inner element within the selected element
+     * 
+     * @param evt button pressed event
+     */
     private void newInnerElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newInnerElementButtonActionPerformed
     {//GEN-HEADEREND:event_newInnerElementButtonActionPerformed
         if (selectedElement != null)
@@ -1064,12 +1098,22 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_newInnerElementButtonActionPerformed
 
+    /**
+     * Updates the inner element drop down box with the current inner elements assigned to the selected element
+     * 
+     * @param evt selecting the drop down box
+     */
     private void innerElementBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt)//GEN-FIRST:event_innerElementBoxPopupMenuWillBecomeVisible
     {//GEN-HEADEREND:event_innerElementBoxPopupMenuWillBecomeVisible
         updateInnerElementBox();
         this.revalidate();
     }//GEN-LAST:event_innerElementBoxPopupMenuWillBecomeVisible
 
+    /**
+     * Opens a file chooser that allows a JSON file to be linked to the currently open model by storing the relative path to the current opened file  
+     * 
+     * @param evt button pressed event
+     */
     private void linkModelToMActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_linkModelToMActionPerformed
     {//GEN-HEADEREND:event_linkModelToMActionPerformed
         // sets it to only accept files
@@ -1088,18 +1132,28 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_linkModelToMActionPerformed
 
+    /**
+     * Loads the currently selected file in the drop down selection box for models linked to the model and loads it. Checks if they want to save the current model to a file first.
+     * 
+     * @param evt button pressed event
+     */
     private void loadLinkedModelMActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadLinkedModelMActionPerformed
     {//GEN-HEADEREND:event_loadLinkedModelMActionPerformed
         if (boxModelToModel.getSelectedItem() != null)
         {
             saveChanges();
-            guiController.saveChanges();
+            guiController.saveChangesOpenModel();
             guiController.loadLinkedModel(boxModelToModel.getSelectedItem().toString());
             selectedElement = null;
             updateGUI();
         }
     }//GEN-LAST:event_loadLinkedModelMActionPerformed
 
+    /**
+     * De-links the currently selected file in the drop down selection box for models linked to the model.
+     * 
+     * @param evt button pressed event
+     */
     private void delinkModelFromMActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delinkModelFromMActionPerformed
     {//GEN-HEADEREND:event_delinkModelFromMActionPerformed
         if (boxModelToModel.getSelectedItem() != null)
@@ -1116,6 +1170,11 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_delinkModelFromMActionPerformed
 
+    /**
+     * Opens a file chooser that allows a JSON file to be linked to the currently selected element by storing the relative path to the current opened file.  
+     * 
+     * @param evt button pressed event
+     */
     private void linkModelToEActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_linkModelToEActionPerformed
     {//GEN-HEADEREND:event_linkModelToEActionPerformed
         if (selectedElement != null)
@@ -1141,18 +1200,30 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_linkModelToEActionPerformed
 
+    /**
+     * Loads the currently selected file in the drop down selection box for models linked to the element and loads it. Checks if they want to save the current model to a file first.
+     * 
+     * @param evt button pressed event
+     */
     private void loadLinkedModelEActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadLinkedModelEActionPerformed
     {//GEN-HEADEREND:event_loadLinkedModelEActionPerformed
         if (selectedElement != null && boxModelToElement.getSelectedItem() != null)
         {
+            
             saveChanges();
-            guiController.saveChanges();
+            guiController.saveChangesOpenModel();
             guiController.loadLinkedModel(boxModelToElement.getSelectedItem().toString());
             selectedElement = null;
             updateGUI();
         }
+        
     }//GEN-LAST:event_loadLinkedModelEActionPerformed
 
+    /**
+     * De-links the currently selected file in the drop down selection box for models linked to the element.
+     * 
+     * @param evt button pressed event
+     */
     private void delinkModelFromEActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delinkModelFromEActionPerformed
     {//GEN-HEADEREND:event_delinkModelFromEActionPerformed
         if (selectedElement != null && boxModelToElement.getSelectedItem() != null)
@@ -1169,14 +1240,19 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_delinkModelFromEActionPerformed
 
+    /**
+     * Open the selected inner element for editing.
+     * 
+     * @param evt button pressed event
+     */
     private void editInnerElementButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editInnerElementButtonActionPerformed
     {//GEN-HEADEREND:event_editInnerElementButtonActionPerformed
         if (selectedElement != null)
         {
             saveChanges();
             String lookup = innerElementBox.getSelectedItem().toString();
-            lookup = guiController.getIDFromBox(lookup);
-            selectedElement = guiController.findElement(lookup);
+            String lookupID = guiController.getIDFromBox(lookup);
+            selectedElement = guiController.findElement(lookupID);
             String type = selectedElement.getType();
             boxType.setSelectedItem(type);
             fieldIdentifier.setText(selectedElement.getIdentifier());
@@ -1192,6 +1268,15 @@ public class ElementGUI extends javax.swing.JPanel
             stringArrayEditor.setText("");
             updateArrays();
             updateBoxes();
+            int selectedItem = 0;            
+            for(String temp : listElements.getItems())
+            {
+                if(lookup.equals(temp))
+                {
+                    listElements.select(selectedItem);
+                }
+                selectedItem++;
+            }
         }
         else
         {
@@ -1199,11 +1284,26 @@ public class ElementGUI extends javax.swing.JPanel
         }
     }//GEN-LAST:event_editInnerElementButtonActionPerformed
 
+    /**
+     * Updates all the relevant list boxes and text arrays to reflect any changes to the model
+     */
     private void updateGUI()
     {
         updateList();
         updateBoxes();
         updateArrays();
+    }
+    
+    /**
+     * Enables all the text area selection buttons.
+     */
+    private void enableButtons()
+    {        
+        labelTextfield.setText("Nothing selected:");
+        editAttributesButton.setEnabled(true);
+        editNotesButton.setEnabled(true);
+        editResponsibiltiesButton.setEnabled(true);
+        editOperationsButton.setEnabled(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1254,13 +1354,4 @@ public class ElementGUI extends javax.swing.JPanel
     private javax.swing.JButton saveButton;
     private javax.swing.JEditorPane stringArrayEditor;
     // End of variables declaration//GEN-END:variables
-
-    private void enableButtons()
-    {        
-        labelTextfield.setText("Nothing selected:");
-        editAttributesButton.setEnabled(true);
-        editNotesButton.setEnabled(true);
-        editResponsibiltiesButton.setEnabled(true);
-        editOperationsButton.setEnabled(true);
-    }
 }
